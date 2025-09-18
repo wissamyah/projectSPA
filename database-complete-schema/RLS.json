@@ -1,0 +1,209 @@
+[
+  {
+    "tablename": "bookings",
+    "policyname": "Authenticated users can update any booking",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "UPDATE",
+    "using_expression": "(auth.uid() IS NOT NULL)",
+    "check_expression": null
+  },
+  {
+    "tablename": "bookings",
+    "policyname": "Authenticated users can view all bookings",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "SELECT",
+    "using_expression": "(auth.uid() IS NOT NULL)",
+    "check_expression": null
+  },
+  {
+    "tablename": "bookings",
+    "policyname": "Users can create own bookings",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "INSERT",
+    "using_expression": null,
+    "check_expression": "((auth.uid() = user_id) OR (user_id IS NULL))"
+  },
+  {
+    "tablename": "bookings",
+    "policyname": "Users can update own bookings",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "UPDATE",
+    "using_expression": "(auth.uid() = user_id)",
+    "check_expression": null
+  },
+  {
+    "tablename": "bookings",
+    "policyname": "Users can view own bookings",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "SELECT",
+    "using_expression": "(auth.uid() = user_id)",
+    "check_expression": null
+  },
+  {
+    "tablename": "calendar_sync_logs",
+    "policyname": "Admin can view sync logs",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "SELECT",
+    "using_expression": "(EXISTS ( SELECT 1\n   FROM auth.users\n  WHERE ((auth.uid() = users.id) AND (((users.raw_user_meta_data ->> 'role'::text) = 'admin'::text) OR ((users.email)::text = 'admin@example.com'::text)))))",
+    "check_expression": null
+  },
+  {
+    "tablename": "service_categories",
+    "policyname": "Anyone can view service categories",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "SELECT",
+    "using_expression": "true",
+    "check_expression": null
+  },
+  {
+    "tablename": "service_categories",
+    "policyname": "Authenticated users can manage service categories",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "ALL",
+    "using_expression": "(auth.uid() IS NOT NULL)",
+    "check_expression": null
+  },
+  {
+    "tablename": "services",
+    "policyname": "Anyone can view active services",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "SELECT",
+    "using_expression": "((is_active = true) OR (auth.uid() IS NOT NULL))",
+    "check_expression": null
+  },
+  {
+    "tablename": "services",
+    "policyname": "Authenticated users can delete services",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "DELETE",
+    "using_expression": "(auth.uid() IS NOT NULL)",
+    "check_expression": null
+  },
+  {
+    "tablename": "services",
+    "policyname": "Authenticated users can insert services",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "INSERT",
+    "using_expression": null,
+    "check_expression": "(auth.uid() IS NOT NULL)"
+  },
+  {
+    "tablename": "services",
+    "policyname": "Authenticated users can update services",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "UPDATE",
+    "using_expression": "(auth.uid() IS NOT NULL)",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff",
+    "policyname": "Anyone can view active staff",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "SELECT",
+    "using_expression": "(is_active = true)",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff",
+    "policyname": "Authenticated users can delete staff",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "DELETE",
+    "using_expression": "(auth.uid() IS NOT NULL)",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff",
+    "policyname": "Authenticated users can insert staff",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "INSERT",
+    "using_expression": null,
+    "check_expression": "(auth.uid() IS NOT NULL)"
+  },
+  {
+    "tablename": "staff",
+    "policyname": "Authenticated users can update staff",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "UPDATE",
+    "using_expression": "(auth.uid() IS NOT NULL)",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff",
+    "policyname": "Authenticated users can view all staff",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "SELECT",
+    "using_expression": "(auth.uid() IS NOT NULL)",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff_categories",
+    "policyname": "Anyone can view staff categories",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "SELECT",
+    "using_expression": "true",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff_categories",
+    "policyname": "Authenticated users can manage staff categories",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "ALL",
+    "using_expression": "(auth.uid() IS NOT NULL)",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff_schedules",
+    "policyname": "Anyone can view staff schedules",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "SELECT",
+    "using_expression": "true",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff_schedules",
+    "policyname": "Authenticated users can manage staff schedules",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "ALL",
+    "using_expression": "(auth.uid() IS NOT NULL)",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff_services",
+    "policyname": "Anyone can view staff services",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "SELECT",
+    "using_expression": "true",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff_services",
+    "policyname": "Authenticated users can manage staff services",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "ALL",
+    "using_expression": "(auth.uid() IS NOT NULL)",
+    "check_expression": null
+  }
+]

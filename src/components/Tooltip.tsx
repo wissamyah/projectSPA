@@ -10,29 +10,40 @@ interface TooltipProps {
   className?: string
 }
 
-const Tooltip = ({ 
-  children, 
-  content, 
+const Tooltip = ({
+  children,
+  content,
   position = 'top',
   delay = 200,
   className = ''
 }: TooltipProps) => {
   const [isVisible, setIsVisible] = useState(false)
-  const [tooltipStyle, setTooltipStyle] = useState<React.CSSProperties>({})
-  const [isMounted, setIsMounted] = useState(false)
+  const [tooltipStyle, setTooltipStyle] = useState<React.CSSProperties>({
+    position: 'fixed',
+    visibility: 'hidden',
+    top: 0,
+    left: 0,
+    opacity: 0,
+    zIndex: 9999,
+    pointerEvents: 'none'
+  })
+  const [isPositioned, setIsPositioned] = useState(false)
   const triggerRef = useRef<HTMLDivElement>(null)
   const tooltipRef = useRef<HTMLDivElement>(null)
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const animationFrameRef = useRef<number | null>(null)
 
   const calculatePosition = useCallback(() => {
     if (!triggerRef.current || !tooltipRef.current) return
 
     const triggerRect = triggerRef.current.getBoundingClientRect()
     const tooltipRect = tooltipRef.current.getBoundingClientRect()
-    
+    const scrollY = window.scrollY || window.pageYOffset
+    const scrollX = window.scrollX || window.pageXOffset
+
     let top = 0
     let left = 0
-    
+
     switch (position) {
       case 'top':
         top = triggerRect.top - tooltipRect.height - 8
@@ -51,7 +62,7 @@ const Tooltip = ({
         left = triggerRect.right + 8
         break
     }
-    
+
     // Ensure tooltip stays within viewport
     const padding = 10
     if (left < padding) left = padding
@@ -62,22 +73,24 @@ const Tooltip = ({
     if (top + tooltipRect.height > window.innerHeight - padding) {
       top = window.innerHeight - tooltipRect.height - padding
     }
-    
+
     setTooltipStyle({
       position: 'fixed',
       top: `${top}px`,
       left: `${left}px`,
+      visibility: 'visible',
+      opacity: 1,
       zIndex: 9999,
       pointerEvents: 'none' as const,
-      opacity: 1,
-      visibility: 'visible'
+      transition: 'opacity 200ms ease-in-out'
     })
+    setIsPositioned(true)
   }, [position])
 
   const handleMouseEnter = () => {
     timeoutRef.current = setTimeout(() => {
       setIsVisible(true)
-      setIsMounted(false) // Reset mounted state for new hover
+      setIsPositioned(false)
     }, delay)
   }
 
@@ -85,42 +98,61 @@ const Tooltip = ({
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
+    if (animationFrameRef.current !== null) {
+      cancelAnimationFrame(animationFrameRef.current)
+    }
     setIsVisible(false)
-    setIsMounted(false)
+    setIsPositioned(false)
+    setTooltipStyle({
+      position: 'fixed',
+      visibility: 'hidden',
+      top: 0,
+      left: 0,
+      opacity: 0,
+      zIndex: 9999,
+      pointerEvents: 'none'
+    })
   }
 
-  // Use callback ref to know exactly when tooltip is mounted
+  // Use callback ref to calculate position after render
   const tooltipCallbackRef = useCallback((node: HTMLDivElement | null) => {
-    if (node !== null) {
+    if (node !== null && isVisible) {
       tooltipRef.current = node
-      // Use requestAnimationFrame to ensure the browser has painted the element
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          calculatePosition()
-          setIsMounted(true)
-        })
+      // Use animation frame to ensure DOM is ready
+      animationFrameRef.current = requestAnimationFrame(() => {
+        calculatePosition()
       })
     }
-  }, [calculatePosition])
+  }, [calculatePosition, isVisible])
 
   useEffect(() => {
-    if (isVisible && isMounted) {
+    if (isVisible && isPositioned) {
       // Recalculate on scroll or resize
-      const handleRecalculate = () => calculatePosition()
+      const handleRecalculate = () => {
+        animationFrameRef.current = requestAnimationFrame(() => {
+          calculatePosition()
+        })
+      }
       window.addEventListener('scroll', handleRecalculate, true)
       window.addEventListener('resize', handleRecalculate)
-      
+
       return () => {
         window.removeEventListener('scroll', handleRecalculate, true)
         window.removeEventListener('resize', handleRecalculate)
+        if (animationFrameRef.current !== null) {
+          cancelAnimationFrame(animationFrameRef.current)
+        }
       }
     }
-  }, [isVisible, isMounted, calculatePosition])
+  }, [isVisible, isPositioned, calculatePosition])
 
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
+      }
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current)
       }
     }
   }, [])
@@ -140,16 +172,6 @@ const Tooltip = ({
     }
   }
 
-  // Initial style for tooltip (invisible but measurable)
-  const initialStyle: React.CSSProperties = {
-    position: 'fixed',
-    top: '0px',
-    left: '0px',
-    visibility: 'hidden',
-    opacity: 0,
-    zIndex: 9999,
-    pointerEvents: 'none'
-  }
 
   return (
     <>
@@ -165,17 +187,22 @@ const Tooltip = ({
       {isVisible && createPortal(
         <div
           ref={tooltipCallbackRef}
-          style={isMounted ? tooltipStyle : initialStyle}
+          style={tooltipStyle}
           className={`
-            tooltip-container bg-slate-800 text-white text-sm rounded-lg px-4 py-3
-            shadow-xl min-w-max max-w-sm transition-opacity duration-200
+            bg-gradient-to-r from-sage-800/95 to-sage-900/95 text-white text-xs rounded-lg px-2.5 py-1.5
+            shadow-lg min-w-max max-w-xs border border-sage-700/30
+            backdrop-blur-md backdrop-saturate-150
             ${className}
           `}
         >
-          {content}
+          <div className="relative z-10">
+            {content}
+          </div>
+          {/* Glass effect overlay */}
+          <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-white/5 to-white/10 pointer-events-none" />
           {/* Arrow */}
           <div
-            className={`absolute w-2 h-2 bg-slate-800 rotate-45 ${getArrowStyles()}`}
+            className={`absolute w-2 h-2 bg-sage-800/95 rotate-45 ${getArrowStyles()}`}
           />
         </div>,
         document.body

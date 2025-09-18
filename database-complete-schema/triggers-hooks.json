@@ -1,0 +1,16 @@
+[
+  {
+    "table_name": "services",
+    "trigger_name": "update_services_updated_at",
+    "trigger_event": "UPDATE",
+    "action_timing": "BEFORE",
+    "action_statement": "EXECUTE FUNCTION update_updated_at_column()"
+  },
+  {
+    "table_name": "staff",
+    "trigger_name": "update_staff_updated_at",
+    "trigger_event": "UPDATE",
+    "action_timing": "BEFORE",
+    "action_statement": "EXECUTE FUNCTION update_updated_at_column()"
+  }
+]

@@ -1,0 +1,722 @@
+[
+  {
+    "table_name": "archived_bookings",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "archived_bookings",
+    "column_name": "customer_name",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "archived_bookings",
+    "column_name": "customer_email",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "archived_bookings",
+    "column_name": "customer_phone",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "archived_bookings",
+    "column_name": "service_id",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "archived_bookings",
+    "column_name": "service_uuid",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "archived_bookings",
+    "column_name": "staff_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "archived_bookings",
+    "column_name": "booking_date",
+    "data_type": "date",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "archived_bookings",
+    "column_name": "booking_time",
+    "data_type": "time without time zone",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "archived_bookings",
+    "column_name": "status",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "archived_bookings",
+    "column_name": "notes",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "archived_bookings",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "CURRENT_TIMESTAMP"
+  },
+  {
+    "table_name": "archived_bookings",
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "CURRENT_TIMESTAMP"
+  },
+  {
+    "table_name": "archived_bookings",
+    "column_name": "archived_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "CURRENT_TIMESTAMP"
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "user_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "service_id",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "booking_date",
+    "data_type": "date",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "booking_time",
+    "data_type": "time without time zone",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "status",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "'pending'::text"
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "customer_name",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "customer_email",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "customer_phone",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "notes",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "staff_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "service_uuid",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "google_event_id",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "google_calendar_synced",
+    "data_type": "boolean",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "false"
+  },
+  {
+    "table_name": "bookings",
+    "column_name": "last_sync_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "calendar_sync_logs",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "calendar_sync_logs",
+    "column_name": "booking_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "calendar_sync_logs",
+    "column_name": "action",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "calendar_sync_logs",
+    "column_name": "status",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "calendar_sync_logs",
+    "column_name": "error_message",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "calendar_sync_logs",
+    "column_name": "google_event_id",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "calendar_sync_logs",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "calendar_sync_queue",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "calendar_sync_queue",
+    "column_name": "booking_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "calendar_sync_queue",
+    "column_name": "action",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "calendar_sync_queue",
+    "column_name": "booking_data",
+    "data_type": "jsonb",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "calendar_sync_queue",
+    "column_name": "status",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "'pending'::text"
+  },
+  {
+    "table_name": "calendar_sync_queue",
+    "column_name": "attempts",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "calendar_sync_queue",
+    "column_name": "last_error",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "calendar_sync_queue",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "calendar_sync_queue",
+    "column_name": "processed_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "service_categories",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "service_categories",
+    "column_name": "name",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "service_categories",
+    "column_name": "display_order",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "service_categories",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "services",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "services",
+    "column_name": "category_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "services",
+    "column_name": "name",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "services",
+    "column_name": "description",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "services",
+    "column_name": "duration",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "services",
+    "column_name": "price",
+    "data_type": "numeric",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "services",
+    "column_name": "max_concurrent",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "1"
+  },
+  {
+    "table_name": "services",
+    "column_name": "requires_room",
+    "data_type": "boolean",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "true"
+  },
+  {
+    "table_name": "services",
+    "column_name": "is_active",
+    "data_type": "boolean",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "true"
+  },
+  {
+    "table_name": "services",
+    "column_name": "display_order",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "table_name": "services",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "services",
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "staff",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "staff",
+    "column_name": "name",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "staff",
+    "column_name": "email",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "staff",
+    "column_name": "phone",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "staff",
+    "column_name": "specialization",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "staff",
+    "column_name": "bio",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "staff",
+    "column_name": "avatar_url",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "staff",
+    "column_name": "is_active",
+    "data_type": "boolean",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "true"
+  },
+  {
+    "table_name": "staff",
+    "column_name": "hire_date",
+    "data_type": "date",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "CURRENT_DATE"
+  },
+  {
+    "table_name": "staff",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "staff",
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "staff_categories",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "staff_categories",
+    "column_name": "staff_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "staff_categories",
+    "column_name": "category_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "staff_categories",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "staff_schedules",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "staff_schedules",
+    "column_name": "staff_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "staff_schedules",
+    "column_name": "day_of_week",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "table_name": "staff_schedules",
+    "column_name": "start_time",
+    "data_type": "time without time zone",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "staff_schedules",
+    "column_name": "end_time",
+    "data_type": "time without time zone",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "staff_schedules",
+    "column_name": "is_available",
+    "data_type": "boolean",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "true"
+  },
+  {
+    "table_name": "staff_schedules",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "table_name": "staff_services",
+    "column_name": "id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": "gen_random_uuid()"
+  },
+  {
+    "table_name": "staff_services",
+    "column_name": "staff_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "staff_services",
+    "column_name": "service_id",
+    "data_type": "uuid",
+    "character_maximum_length": null,
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "table_name": "staff_services",
+    "column_name": "is_primary",
+    "data_type": "boolean",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "false"
+  },
+  {
+    "table_name": "staff_services",
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "character_maximum_length": null,
+    "is_nullable": "YES",
+    "column_default": "now()"
+  }
+]

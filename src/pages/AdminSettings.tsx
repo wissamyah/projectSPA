@@ -91,13 +91,55 @@ const AdminSettings = () => {
   const sendReminders = async () => {
     setSendingReminders(true)
     setReminderResult('')
-    
+
     try {
-      const { data, error } = await supabase.functions.invoke('send-reminders')
-      
+      // Get tomorrow's date
+      const tomorrow = new Date()
+      tomorrow.setDate(tomorrow.getDate() + 1)
+      const tomorrowStr = tomorrow.toISOString().split('T')[0]
+
+      // Fetch tomorrow's confirmed bookings
+      const { data: bookings, error } = await supabase
+        .from('bookings')
+        .select(`
+          *,
+          service:service_uuid(name),
+          staff:staff_id(name)
+        `)
+        .eq('booking_date', tomorrowStr)
+        .eq('status', 'confirmed')
+
       if (error) throw error
-      
-      setReminderResult(`✓ ${data.message}`)
+
+      if (!bookings || bookings.length === 0) {
+        setReminderResult('✓ No bookings for tomorrow')
+        setTimeout(() => setReminderResult(''), 5000)
+        return
+      }
+
+      // Send reminders using EmailJS
+      const { sendBookingReminder } = await import('../services/emailService')
+      let sentCount = 0
+      let failedCount = 0
+
+      for (const booking of bookings) {
+        try {
+          await sendBookingReminder({
+            to: booking.customer_email,
+            customerName: booking.customer_name,
+            serviceName: booking.service?.name || 'Service',
+            date: booking.booking_date,
+            time: booking.booking_time.substring(0, 5),
+            staffName: booking.staff?.name
+          })
+          sentCount++
+        } catch (err) {
+          console.error(`Failed to send reminder to ${booking.customer_email}:`, err)
+          failedCount++
+        }
+      }
+
+      setReminderResult(`✓ Sent ${sentCount} reminder${sentCount !== 1 ? 's' : ''}${failedCount > 0 ? `, ${failedCount} failed` : ''}`)
       setTimeout(() => setReminderResult(''), 5000)
     } catch (error: any) {
       setReminderResult(`✗ Error: ${error.message}`)

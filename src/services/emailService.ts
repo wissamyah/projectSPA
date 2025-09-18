@@ -10,318 +10,279 @@ interface EmailData {
   notes?: string
 }
 
-export const sendBookingConfirmation = async (data: EmailData) => {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: #1e293b; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-        .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px; }
-        .booking-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
-        .detail-row { display: flex; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .detail-label { font-weight: bold; width: 120px; }
-        .button { display: inline-block; padding: 12px 30px; background: #1e293b; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px; }
-        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1>Booking Confirmation</h1>
-        </div>
-        <div class="content">
-          <p>Dear ${data.customerName},</p>
-          <p>Your appointment has been successfully booked! We look forward to seeing you.</p>
-          
-          <div class="booking-details">
-            <h3>Appointment Details:</h3>
-            <div class="detail-row">
-              <span class="detail-label">Service:</span>
-              <span>${data.serviceName}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Date:</span>
-              <span>${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Time:</span>
-              <span>${data.time}</span>
-            </div>
-            ${data.staffName ? `
-            <div class="detail-row">
-              <span class="detail-label">Staff:</span>
-              <span>${data.staffName}</span>
-            </div>
-            ` : ''}
-            ${data.notes ? `
-            <div class="detail-row">
-              <span class="detail-label">Notes:</span>
-              <span>${data.notes}</span>
-            </div>
-            ` : ''}
-          </div>
-          
-          <p><strong>Cancellation Policy:</strong> Please note that cancellations must be made at least 2 hours before your appointment time.</p>
-          
-          <div class="footer">
-            <p>If you need to reschedule or cancel, please log into your account or contact us.</p>
-            <p>Thank you for choosing our spa!</p>
-          </div>
-        </div>
-      </div>
-    </body>
-    </html>
-  `
-
+const sendEmail = async (to: string, subject: string, html: string) => {
   try {
-    const { data: result, error } = await supabase.functions.invoke('send-email', {
-      body: {
-        to: data.to,
-        subject: `Booking Confirmation - ${data.serviceName}`,
-        html
-      }
+    // Use Supabase Edge Function for production
+    const { data, error } = await supabase.functions.invoke('send-email', {
+      body: { to, subject, html }
     })
 
     if (error) throw error
-    return result
+
+    // Also log to console in development
+    if (import.meta.env.DEV) {
+      console.log('📧 Email sent:', { to, subject })
+
+      // Store in localStorage for testing viewer
+      const emails = JSON.parse(localStorage.getItem('test_emails') || '[]')
+      emails.push({
+        to,
+        subject,
+        timestamp: new Date().toISOString(),
+        html
+      })
+      localStorage.setItem('test_emails', JSON.stringify(emails))
+    }
+
+    return data
   } catch (error) {
-    console.error('Error sending confirmation email:', error)
+    console.error('Error sending email:', error)
+
+    // Fallback to localStorage in development if Edge Function fails
+    if (import.meta.env.DEV) {
+      console.log('📧 Fallback: Email logged locally')
+      const emails = JSON.parse(localStorage.getItem('test_emails') || '[]')
+      emails.push({
+        to,
+        subject,
+        timestamp: new Date().toISOString(),
+        html
+      })
+      localStorage.setItem('test_emails', JSON.stringify(emails))
+      return { success: true, message: 'Email logged locally (Edge Function not available)' }
+    }
+
     throw error
   }
+}
+
+export const sendBookingReceived = async (data: EmailData) => {
+  const html = `
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">Booking Request Received 📋</h1>
+      </div>
+
+      <div style="background: #f7f7f7; padding: 30px; border-radius: 0 0 10px 10px;">
+        <p style="font-size: 16px; color: #333; margin-bottom: 20px;">Dear ${data.customerName},</p>
+
+        <p style="font-size: 16px; color: #333; margin-bottom: 25px;">
+          Thank you for your booking request! We've received your appointment details and our team will confirm your booking shortly.
+        </p>
+
+        <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+          <p style="margin: 0; color: #92400e; font-size: 14px;">
+            <strong>⏳ Status:</strong> Pending Confirmation
+          </p>
+          <p style="margin: 10px 0 0 0; color: #92400e; font-size: 14px;">
+            You'll receive a confirmation email once our staff verifies availability.
+          </p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h2 style="color: #f59e0b; font-size: 18px; margin-top: 0; border-bottom: 2px solid #f59e0b; padding-bottom: 10px;">
+            Requested Appointment
+          </h2>
+
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 10px 0; color: #666; font-weight: bold; width: 120px;">Service:</td>
+              <td style="padding: 10px 0; color: #333; font-size: 16px;">${data.serviceName}</td>
+            </tr>
+            <tr style="background: #f9f9f9;">
+              <td style="padding: 10px 0; color: #666; font-weight: bold;">Date:</td>
+              <td style="padding: 10px 0; color: #333; font-size: 16px;">${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; color: #666; font-weight: bold;">Time:</td>
+              <td style="padding: 10px 0; color: #333; font-size: 16px;">${data.time}</td>
+            </tr>
+            ${data.staffName ? `<tr style="background: #f9f9f9;">
+              <td style="padding: 10px 0; color: #666; font-weight: bold;">Preferred Therapist:</td>
+              <td style="padding: 10px 0; color: #333; font-size: 16px;">${data.staffName}</td>
+            </tr>` : ''}
+          </table>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+          <p style="color: #666; font-size: 14px; margin: 5px 0;">We'll get back to you soon!</p>
+          <p style="color: #999; font-size: 12px; margin: 5px 0;">Usually within 1-2 hours during business hours</p>
+        </div>
+      </div>
+    </div>
+  `
+
+  return sendEmail(data.to, `Booking Request Received - ${data.serviceName}`, html)
+}
+
+export const sendBookingConfirmation = async (data: EmailData) => {
+  const html = `
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">Booking Confirmed! ✨</h1>
+      </div>
+
+      <div style="background: #f7f7f7; padding: 30px; border-radius: 0 0 10px 10px;">
+        <p style="font-size: 16px; color: #333; margin-bottom: 20px;">Dear ${data.customerName},</p>
+
+        <p style="font-size: 16px; color: #333; margin-bottom: 25px;">
+          Great news! Your spa appointment has been confirmed. We're looking forward to seeing you!
+        </p>
+
+        <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h2 style="color: #667eea; font-size: 18px; margin-top: 0; border-bottom: 2px solid #667eea; padding-bottom: 10px;">
+            Appointment Details
+          </h2>
+
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 10px 0; color: #666; font-weight: bold; width: 120px;">Service:</td>
+              <td style="padding: 10px 0; color: #333; font-size: 16px;">${data.serviceName}</td>
+            </tr>
+            <tr style="background: #f9f9f9;">
+              <td style="padding: 10px 0; color: #666; font-weight: bold;">Date:</td>
+              <td style="padding: 10px 0; color: #333; font-size: 16px;">${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; color: #666; font-weight: bold;">Time:</td>
+              <td style="padding: 10px 0; color: #333; font-size: 16px;">${data.time}</td>
+            </tr>
+            ${data.staffName ? `<tr style="background: #f9f9f9;">
+              <td style="padding: 10px 0; color: #666; font-weight: bold;">Therapist:</td>
+              <td style="padding: 10px 0; color: #333; font-size: 16px;">${data.staffName}</td>
+            </tr>` : ''}
+          </table>
+        </div>
+
+        <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-top: 20px; border-radius: 4px;">
+          <p style="margin: 0; color: #856404; font-size: 14px;">
+            <strong>Cancellation Policy:</strong> Please arrive 10 minutes early. Cancellations must be made at least 2 hours in advance.
+          </p>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+          <p style="color: #666; font-size: 14px; margin: 5px 0;">Thank you for choosing our spa!</p>
+        </div>
+      </div>
+    </div>
+  `
+
+  return sendEmail(data.to, `Booking Confirmation - ${data.serviceName}`, html)
 }
 
 export const sendBookingReminder = async (data: EmailData) => {
   const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: #3b82f6; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-        .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px; }
-        .booking-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
-        .detail-row { display: flex; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .detail-label { font-weight: bold; width: 120px; }
-        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1>Appointment Reminder</h1>
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">Appointment Reminder 📅</h1>
+      </div>
+
+      <div style="background: #f7f7f7; padding: 30px; border-radius: 0 0 10px 10px;">
+        <p style="font-size: 16px; color: #333; margin-bottom: 20px;">Dear ${data.customerName},</p>
+
+        <p style="font-size: 16px; color: #333; margin-bottom: 25px;">
+          This is a friendly reminder about your appointment tomorrow.
+        </p>
+
+        <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h2 style="color: #3b82f6; font-size: 18px; margin-top: 0;">Tomorrow's Appointment</h2>
+          <p style="font-size: 16px; margin: 10px 0;"><strong>Service:</strong> ${data.serviceName}</p>
+          <p style="font-size: 16px; margin: 10px 0;"><strong>Time:</strong> ${data.time}</p>
+          ${data.staffName ? `<p style="font-size: 16px; margin: 10px 0;"><strong>Therapist:</strong> ${data.staffName}</p>` : ''}
         </div>
-        <div class="content">
-          <p>Dear ${data.customerName},</p>
-          <p>This is a friendly reminder about your upcoming appointment tomorrow.</p>
-          
-          <div class="booking-details">
-            <h3>Appointment Details:</h3>
-            <div class="detail-row">
-              <span class="detail-label">Service:</span>
-              <span>${data.serviceName}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Date:</span>
-              <span>${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Time:</span>
-              <span>${data.time}</span>
-            </div>
-            ${data.staffName ? `
-            <div class="detail-row">
-              <span class="detail-label">Staff:</span>
-              <span>${data.staffName}</span>
-            </div>
-            ` : ''}
-          </div>
-          
-          <p>Please arrive 10 minutes early to check in. If you need to reschedule or cancel, please do so at least 2 hours before your appointment time.</p>
-          
-          <div class="footer">
-            <p>We look forward to seeing you!</p>
-            <p>Thank you for choosing our spa!</p>
-          </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+          <p style="color: #666; font-size: 14px;">Please arrive 10 minutes early. We look forward to seeing you!</p>
         </div>
       </div>
-    </body>
-    </html>
+    </div>
   `
 
-  try {
-    const { data: result, error } = await supabase.functions.invoke('send-email', {
-      body: {
-        to: data.to,
-        subject: `Appointment Reminder - Tomorrow at ${data.time}`,
-        html
-      }
-    })
-
-    if (error) throw error
-    return result
-  } catch (error) {
-    console.error('Error sending reminder email:', error)
-    throw error
-  }
+  return sendEmail(data.to, `Appointment Reminder - Tomorrow at ${data.time}`, html)
 }
 
-export const sendRescheduleNotification = async (data: EmailData & { originalDate: string, originalTime: string, newDate: string, newTime: string, reason?: string }) => {
+export const sendRescheduleNotification = async (data: EmailData & {
+  originalDate: string,
+  originalTime: string,
+  newDate: string,
+  newTime: string,
+  reason?: string
+}) => {
   const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: #3b82f6; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-        .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px; }
-        .booking-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
-        .detail-row { display: flex; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .detail-label { font-weight: bold; width: 120px; }
-        .highlight { background: #fef3c7; padding: 15px; border-radius: 8px; border: 1px solid #fbbf24; margin: 20px 0; }
-        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1>Appointment Rescheduled</h1>
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">Appointment Rescheduled 📅</h1>
+      </div>
+
+      <div style="background: #f7f7f7; padding: 30px; border-radius: 0 0 10px 10px;">
+        <p style="font-size: 16px; color: #333; margin-bottom: 20px;">Dear ${data.customerName},</p>
+
+        <p style="font-size: 16px; color: #333; margin-bottom: 25px;">
+          Your appointment has been successfully rescheduled.
+        </p>
+
+        <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+          <h3 style="margin: 0 0 10px 0; color: #92400e; font-size: 16px;">⚠️ NEW DATE AND TIME</h3>
+          <p style="margin: 0; color: #92400e; font-size: 18px; font-weight: bold;">
+            ${new Date(data.newDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at ${data.newTime}
+          </p>
         </div>
-        <div class="content">
-          <p>Dear ${data.customerName},</p>
-          <p>Your appointment has been rescheduled. Please note the new date and time below.</p>
-          
-          <div class="highlight">
-            <h3 style="margin-top: 0;">New Appointment Details:</h3>
-            <div class="detail-row">
-              <span class="detail-label">Service:</span>
-              <span>${data.serviceName}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">New Date:</span>
-              <span><strong>${new Date(data.newDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong></span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">New Time:</span>
-              <span><strong>${data.newTime}</strong></span>
-            </div>
-            ${data.staffName ? `
-            <div class="detail-row">
-              <span class="detail-label">Staff:</span>
-              <span>${data.staffName}</span>
-            </div>
-            ` : ''}
-          </div>
-          
-          <div class="booking-details">
-            <h4>Previous Appointment:</h4>
-            <p style="text-decoration: line-through; color: #666;">
-              ${new Date(data.originalDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at ${data.originalTime}
-            </p>
-            ${data.reason ? `
-            <p style="margin-top: 10px;"><strong>Reason:</strong> ${data.reason}</p>
-            ` : ''}
-          </div>
-          
-          <p>If this new time doesn't work for you, please contact us immediately to find an alternative.</p>
-          
-          <div class="footer">
-            <p>We apologize for any inconvenience and look forward to seeing you at the new time.</p>
-            <p>Thank you for your understanding!</p>
-          </div>
+
+        <div style="background: white; border-radius: 8px; padding: 20px;">
+          <p style="color: #999; font-size: 14px; margin-bottom: 10px;">
+            <strong>Previous:</strong> <span style="text-decoration: line-through;">${new Date(data.originalDate).toLocaleDateString()} at ${data.originalTime}</span>
+          </p>
+          <p style="font-size: 16px; margin: 10px 0;"><strong>Service:</strong> ${data.serviceName}</p>
+          ${data.staffName ? `<p style="font-size: 16px; margin: 10px 0;"><strong>Therapist:</strong> ${data.staffName}</p>` : ''}
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+          <p style="color: #666; font-size: 14px;">Please update your calendar. We look forward to seeing you!</p>
         </div>
       </div>
-    </body>
-    </html>
+    </div>
   `
 
-  try {
-    const { data: result, error } = await supabase.functions.invoke('send-email', {
-      body: {
-        to: data.to,
-        subject: `Appointment Rescheduled - ${data.serviceName}`,
-        html
-      }
-    })
-
-    if (error) throw error
-    return result
-  } catch (error) {
-    console.error('Error sending reschedule notification:', error)
-    throw error
-  }
+  return sendEmail(data.to, `Appointment Rescheduled - ${data.serviceName}`, html)
 }
 
 export const sendCancellationNotification = async (data: EmailData & { reason?: string }) => {
   const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: #ef4444; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-        .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px; }
-        .booking-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
-        .detail-row { display: flex; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .detail-label { font-weight: bold; width: 120px; }
-        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1>Appointment Cancelled</h1>
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #f93b3b 0%, #ff6b6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">Appointment Cancelled</h1>
+      </div>
+
+      <div style="background: #f7f7f7; padding: 30px; border-radius: 0 0 10px 10px;">
+        <p style="font-size: 16px; color: #333; margin-bottom: 20px;">Dear ${data.customerName},</p>
+
+        <p style="font-size: 16px; color: #333; margin-bottom: 25px;">
+          Your appointment has been cancelled as requested.
+        </p>
+
+        <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h2 style="color: #f93b3b; font-size: 18px; margin-top: 0;">Cancelled Appointment</h2>
+          <p style="font-size: 16px; margin: 10px 0;"><strong>Service:</strong> ${data.serviceName}</p>
+          <p style="font-size: 16px; margin: 10px 0;"><strong>Date:</strong> ${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+          <p style="font-size: 16px; margin: 10px 0;"><strong>Time:</strong> ${data.time}</p>
+          ${data.reason ? `<p style="font-size: 16px; margin: 10px 0;"><strong>Reason:</strong> ${data.reason}</p>` : ''}
         </div>
-        <div class="content">
-          <p>Dear ${data.customerName},</p>
-          <p>Your appointment has been cancelled as requested.</p>
-          
-          <div class="booking-details">
-            <h3>Cancelled Appointment:</h3>
-            <div class="detail-row">
-              <span class="detail-label">Service:</span>
-              <span>${data.serviceName}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Date:</span>
-              <span>${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Time:</span>
-              <span>${data.time}</span>
-            </div>
-          </div>
-          
-          <p>We're sorry to see you go! If you'd like to book another appointment, please visit our booking page.</p>
-          
-          <div class="footer">
-            <p>Thank you for letting us know.</p>
-            <p>We hope to see you again soon!</p>
-          </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+          <p style="color: #666; font-size: 14px;">We hope to see you again soon! Feel free to book a new appointment anytime.</p>
         </div>
       </div>
-    </body>
-    </html>
+    </div>
   `
 
-  try {
-    const { data: result, error } = await supabase.functions.invoke('send-email', {
-      body: {
-        to: data.to,
-        subject: `Appointment Cancelled - ${data.serviceName}`,
-        html
-      }
-    })
+  return sendEmail(data.to, `Appointment Cancelled - ${data.serviceName}`, html)
+}
 
-    if (error) throw error
-    return result
-  } catch (error) {
-    console.error('Error sending cancellation email:', error)
-    throw error
-  }
+// Helper function to view test emails (development only)
+export const getTestEmails = () => {
+  return JSON.parse(localStorage.getItem('test_emails') || '[]')
+}
+
+export const clearTestEmails = () => {
+  localStorage.removeItem('test_emails')
 }

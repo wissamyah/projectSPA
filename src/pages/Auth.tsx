@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Mail, Lock, User, Loader } from 'lucide-react'
+import { useModal } from '../contexts/ModalContext'
 
 const Auth = () => {
   const navigate = useNavigate()
@@ -13,6 +14,7 @@ const Auth = () => {
     password: '',
     fullName: ''
   })
+  const { showAlert } = useModal()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -42,7 +44,7 @@ const Auth = () => {
         
         if (error) throw error
         
-        alert('Check your email for the confirmation link!')
+        await showAlert('Check your email for the confirmation link!', 'success')
       } else {
         // Sign in
         const { error } = await supabase.auth.signInWithPassword({

@@ -1,0 +1,162 @@
+[
+    {
+      "tablename": "archived_bookings",
+      "indexname": "archived_bookings_pkey",
+      "indexdef": "CREATE UNIQUE INDEX archived_bookings_pkey ON public.archived_bookings USING btree (id)"
+    },
+    {
+      "tablename": "archived_bookings",
+      "indexname": "idx_archived_bookings_customer",
+      "indexdef": "CREATE INDEX idx_archived_bookings_customer ON public.archived_bookings USING btree (customer_email)"
+    },
+    {
+      "tablename": "archived_bookings",
+      "indexname": "idx_archived_bookings_date",
+      "indexdef": "CREATE INDEX idx_archived_bookings_date ON public.archived_bookings USING btree (booking_date DESC)"
+    },
+    {
+      "tablename": "bookings",
+      "indexname": "bookings_pkey",
+      "indexdef": "CREATE UNIQUE INDEX bookings_pkey ON public.bookings USING btree (id)"
+    },
+    {
+      "tablename": "bookings",
+      "indexname": "idx_bookings_booking_date",
+      "indexdef": "CREATE INDEX idx_bookings_booking_date ON public.bookings USING btree (booking_date)"
+    },
+    {
+      "tablename": "bookings",
+      "indexname": "idx_bookings_google_calendar_synced",
+      "indexdef": "CREATE INDEX idx_bookings_google_calendar_synced ON public.bookings USING btree (google_calendar_synced)"
+    },
+    {
+      "tablename": "bookings",
+      "indexname": "idx_bookings_google_event_id",
+      "indexdef": "CREATE INDEX idx_bookings_google_event_id ON public.bookings USING btree (google_event_id)"
+    },
+    {
+      "tablename": "bookings",
+      "indexname": "idx_bookings_service_uuid",
+      "indexdef": "CREATE INDEX idx_bookings_service_uuid ON public.bookings USING btree (service_uuid)"
+    },
+    {
+      "tablename": "bookings",
+      "indexname": "idx_bookings_staff",
+      "indexdef": "CREATE INDEX idx_bookings_staff ON public.bookings USING btree (staff_id)"
+    },
+    {
+      "tablename": "bookings",
+      "indexname": "idx_bookings_status",
+      "indexdef": "CREATE INDEX idx_bookings_status ON public.bookings USING btree (status)"
+    },
+    {
+      "tablename": "bookings",
+      "indexname": "idx_bookings_user_id",
+      "indexdef": "CREATE INDEX idx_bookings_user_id ON public.bookings USING btree (user_id)"
+    },
+    {
+      "tablename": "calendar_sync_logs",
+      "indexname": "calendar_sync_logs_pkey",
+      "indexdef": "CREATE UNIQUE INDEX calendar_sync_logs_pkey ON public.calendar_sync_logs USING btree (id)"
+    },
+    {
+      "tablename": "calendar_sync_queue",
+      "indexname": "calendar_sync_queue_pkey",
+      "indexdef": "CREATE UNIQUE INDEX calendar_sync_queue_pkey ON public.calendar_sync_queue USING btree (id)"
+    },
+    {
+      "tablename": "calendar_sync_queue",
+      "indexname": "idx_sync_queue_status",
+      "indexdef": "CREATE INDEX idx_sync_queue_status ON public.calendar_sync_queue USING btree (status, created_at)"
+    },
+    {
+      "tablename": "service_categories",
+      "indexname": "service_categories_name_key",
+      "indexdef": "CREATE UNIQUE INDEX service_categories_name_key ON public.service_categories USING btree (name)"
+    },
+    {
+      "tablename": "service_categories",
+      "indexname": "service_categories_pkey",
+      "indexdef": "CREATE UNIQUE INDEX service_categories_pkey ON public.service_categories USING btree (id)"
+    },
+    {
+      "tablename": "services",
+      "indexname": "idx_services_active",
+      "indexdef": "CREATE INDEX idx_services_active ON public.services USING btree (is_active)"
+    },
+    {
+      "tablename": "services",
+      "indexname": "idx_services_category",
+      "indexdef": "CREATE INDEX idx_services_category ON public.services USING btree (category_id)"
+    },
+    {
+      "tablename": "services",
+      "indexname": "services_pkey",
+      "indexdef": "CREATE UNIQUE INDEX services_pkey ON public.services USING btree (id)"
+    },
+    {
+      "tablename": "staff",
+      "indexname": "idx_staff_active",
+      "indexdef": "CREATE INDEX idx_staff_active ON public.staff USING btree (is_active)"
+    },
+    {
+      "tablename": "staff",
+      "indexname": "staff_email_key",
+      "indexdef": "CREATE UNIQUE INDEX staff_email_key ON public.staff USING btree (email)"
+    },
+    {
+      "tablename": "staff",
+      "indexname": "staff_pkey",
+      "indexdef": "CREATE UNIQUE INDEX staff_pkey ON public.staff USING btree (id)"
+    },
+    {
+      "tablename": "staff_categories",
+      "indexname": "idx_staff_categories_category",
+      "indexdef": "CREATE INDEX idx_staff_categories_category ON public.staff_categories USING btree (category_id)"
+    },
+    {
+      "tablename": "staff_categories",
+      "indexname": "idx_staff_categories_staff",
+      "indexdef": "CREATE INDEX idx_staff_categories_staff ON public.staff_categories USING btree (staff_id)"
+    },
+    {
+      "tablename": "staff_categories",
+      "indexname": "staff_categories_pkey",
+      "indexdef": "CREATE UNIQUE INDEX staff_categories_pkey ON public.staff_categories USING btree (id)"
+    },
+    {
+      "tablename": "staff_categories",
+      "indexname": "staff_categories_staff_id_category_id_key",
+      "indexdef": "CREATE UNIQUE INDEX staff_categories_staff_id_category_id_key ON public.staff_categories USING btree (staff_id, category_id)"
+    },
+    {
+      "tablename": "staff_schedules",
+      "indexname": "staff_schedules_pkey",
+      "indexdef": "CREATE UNIQUE INDEX staff_schedules_pkey ON public.staff_schedules USING btree (id)"
+    },
+    {
+      "tablename": "staff_schedules",
+      "indexname": "staff_schedules_staff_id_day_of_week_key",
+      "indexdef": "CREATE UNIQUE INDEX staff_schedules_staff_id_day_of_week_key ON public.staff_schedules USING btree (staff_id, day_of_week)"
+    },
+    {
+      "tablename": "staff_services",
+      "indexname": "idx_staff_services_service",
+      "indexdef": "CREATE INDEX idx_staff_services_service ON public.staff_services USING btree (service_id)"
+    },
+    {
+      "tablename": "staff_services",
+      "indexname": "idx_staff_services_staff",
+      "indexdef": "CREATE INDEX idx_staff_services_staff ON public.staff_services USING btree (staff_id)"
+    },
+    {
+      "tablename": "staff_services",
+      "indexname": "staff_services_pkey",
+      "indexdef": "CREATE UNIQUE INDEX staff_services_pkey ON public.staff_services USING btree (id)"
+    },
+    {
+      "tablename": "staff_services",
+      "indexname": "staff_services_staff_id_service_id_key",
+      "indexdef": "CREATE UNIQUE INDEX staff_services_staff_id_service_id_key ON public.staff_services USING btree (staff_id, service_id)"
+    }
+  ]
