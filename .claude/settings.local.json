@@ -14,7 +14,9 @@
       "Read(//c/**)",
       "Bash(rm:*)",
       "Bash(npm run build:*)",
-      "Bash(supabase:*)"
+      "Bash(supabase:*)",
+      "Bash(git commit:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []
