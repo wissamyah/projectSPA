@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { queryClient } from './lib/queryClient'
 import { ModalProvider } from './contexts/ModalContext'
 import PublicLayout from './layouts/PublicLayout'
@@ -29,6 +28,15 @@ const AdminArchive = lazy(() => import('./pages/AdminArchive'))
 const StaffSchedule = lazy(() => import('./pages/StaffSchedule'))
 const EmailViewer = lazy(() => import('./pages/EmailViewer'))
 const Setup = lazy(() => import('./pages/Setup'))
+
+// Lazy load React Query Devtools only in development
+const ReactQueryDevtools = import.meta.env.DEV
+  ? lazy(() =>
+      import('@tanstack/react-query-devtools').then((module) => ({
+        default: module.ReactQueryDevtools,
+      }))
+    )
+  : () => null
 
 function App() {
   return (
@@ -108,7 +116,11 @@ function App() {
       </Routes>
     </Router>
     </ModalProvider>
-    <ReactQueryDevtools initialIsOpen={false} />
+    {import.meta.env.DEV && (
+      <Suspense fallback={null}>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </Suspense>
+    )}
     </QueryClientProvider>
   )
 }

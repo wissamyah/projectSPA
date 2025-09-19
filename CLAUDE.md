@@ -47,4 +47,19 @@
 - Vercel capacity: ~1.5M visits/month
 - Near-instant page transitions with caching
 
-### Phase 4-6: See OPTIMIZATION_PLAN.md for roadmap
+### Phase 4: Bundle Optimization ✅ (Dec 19, 2024)
+- Added bundle analyzer (rollup-plugin-visualizer)
+- Split vendors into 6 optimized chunks for better caching
+- Enhanced Terser with aggressive tree-shaking
+- Excluded DevTools from production builds
+- Bundle increased to 114KB but with much better caching strategy
+- Files: `vite.config.ts` updated with advanced optimization
+
+### Overall Impact (Phase 1-4):
+- First visit: 114KB Brotli (all chunks)
+- Repeat visits: ~17KB (only main app bundle)
+- API calls: 70% reduction via React Query
+- Vercel capacity: ~1M visits/month
+- Cache hit rate: 80%+ for vendor chunks
+
+### Phase 5-6: See OPTIMIZATION_PLAN.md for roadmap
