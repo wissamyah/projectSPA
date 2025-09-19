@@ -16,6 +16,7 @@ import AdminSchedule from './pages/AdminSchedule'
 import AdminArchive from './pages/AdminArchive'
 import StaffSchedule from './pages/StaffSchedule'
 import EmailViewer from './pages/EmailViewer'
+import Setup from './pages/Setup'
 import NotFound from './pages/NotFound'
 
 function App() {
@@ -46,6 +47,9 @@ function App() {
 
         {/* Public staff schedule route (no auth required) */}
         <Route path="/schedule/:staffId" element={<StaffSchedule />} />
+
+        {/* Setup route for initial admin creation */}
+        <Route path="/setup" element={<Setup />} />
 
         {/* 404 catch-all route */}
         <Route path="*" element={<NotFound />} />
