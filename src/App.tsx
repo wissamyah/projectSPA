@@ -1,5 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { queryClient } from './lib/queryClient'
 import { ModalProvider } from './contexts/ModalContext'
 import PublicLayout from './layouts/PublicLayout'
 import AppLayout from './layouts/AppLayout'
@@ -29,9 +32,10 @@ const Setup = lazy(() => import('./pages/Setup'))
 
 function App() {
   return (
-    <ModalProvider>
-      <Router>
-        <Routes>
+    <QueryClientProvider client={queryClient}>
+      <ModalProvider>
+        <Router>
+          <Routes>
         {/* Public routes with landing page layout */}
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<Landing />} />
@@ -104,6 +108,8 @@ function App() {
       </Routes>
     </Router>
     </ModalProvider>
+    <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   )
 }
 
