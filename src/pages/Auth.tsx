@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { Mail, Lock, User, Loader } from 'lucide-react'
+import { Mail, Lock, User, Loader, Sparkles, Heart, Flower2, Droplets } from 'lucide-react'
 import { useModal } from '../contexts/ModalContext'
 
 const Auth = () => {
@@ -79,27 +79,45 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cream-50 via-white to-sage-50 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-sage-100/30 to-gold-100/30 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-tr from-cream-100/30 to-sage-100/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <Flower2 className="absolute top-20 right-10 h-12 w-12 text-sage-200/40 animate-float" style={{ animationDelay: '0.5s' }} />
+        <Sparkles className="absolute bottom-20 left-10 h-10 w-10 text-gold-300/40 animate-float" style={{ animationDelay: '1s' }} />
+        <Heart className="absolute top-1/2 right-20 h-8 w-8 text-rose-200/40 animate-float" style={{ animationDelay: '1.5s' }} />
+      </div>
+
+      <div className="max-w-md w-full space-y-8 relative z-10">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-slate-900">
-            {isSignUp ? 'Create an Account' : 'Welcome Back'}
+          <div className="flex justify-center mb-6">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-sage-400 to-gold-400 rounded-full blur-lg opacity-60 animate-pulse"></div>
+              <div className="relative bg-white rounded-full p-4 shadow-xl">
+                <Droplets className="h-12 w-12 text-sage-600" />
+              </div>
+            </div>
+          </div>
+
+          <h2 className="text-4xl font-display bg-gradient-to-r from-sage-700 to-sage-500 bg-clip-text text-transparent">
+            {isSignUp ? 'Join Our Sanctuary' : 'Welcome Back'}
           </h2>
-          <p className="mt-2 text-slate-600">
-            {isSignUp ? 'Sign up to book your spa appointments' : 'Sign in to manage your bookings'}
+          <p className="mt-3 text-sage-600 font-light">
+            {isSignUp ? 'Begin your journey to relaxation and renewal' : 'Continue your wellness journey with us'}
           </p>
         </div>
         
-        <div className="bg-white py-8 px-4 shadow-lg rounded-lg sm:px-10">
+        <div className="bg-white/95 backdrop-blur-sm py-8 px-6 shadow-2xl rounded-2xl sm:px-10 border border-sage-100/20">
           <form onSubmit={handleSubmit} className="space-y-6">
             {isSignUp && (
               <div>
-                <label htmlFor="fullName" className="block text-sm font-medium text-slate-700">
+                <label htmlFor="fullName" className="block text-sm font-medium text-sage-700 mb-2">
                   Full Name
                 </label>
-                <div className="mt-1 relative">
+                <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-slate-400" />
+                    <User className="h-5 w-5 text-sage-400 group-focus-within:text-sage-600 transition-colors" />
                   </div>
                   <input
                     id="fullName"
@@ -108,20 +126,20 @@ const Auth = () => {
                     required={isSignUp}
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
-                    placeholder="John Doe"
+                    className="appearance-none block w-full pl-10 pr-3 py-3 bg-cream-50/50 border border-sage-200 rounded-xl placeholder-sage-400 text-sage-700 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent focus:bg-white transition-all"
+                    placeholder="Enter your full name"
                   />
                 </div>
               </div>
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-700">
+              <label htmlFor="email" className="block text-sm font-medium text-sage-700 mb-2">
                 Email Address
               </label>
-              <div className="mt-1 relative">
+              <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-slate-400" />
+                  <Mail className="h-5 w-5 text-sage-400 group-focus-within:text-sage-600 transition-colors" />
                 </div>
                 <input
                   id="email"
@@ -131,19 +149,19 @@ const Auth = () => {
                   required
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
-                  placeholder="you@example.com"
+                  className="appearance-none block w-full pl-10 pr-3 py-3 bg-cream-50/50 border border-sage-200 rounded-xl placeholder-sage-400 text-sage-700 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent focus:bg-white transition-all"
+                  placeholder="your@email.com"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-700">
+              <label htmlFor="password" className="block text-sm font-medium text-sage-700 mb-2">
                 Password
               </label>
-              <div className="mt-1 relative">
+              <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-slate-400" />
+                  <Lock className="h-5 w-5 text-sage-400 group-focus-within:text-sage-600 transition-colors" />
                 </div>
                 <input
                   id="password"
@@ -153,15 +171,15 @@ const Auth = () => {
                   required
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+                  className="appearance-none block w-full pl-10 pr-3 py-3 bg-cream-50/50 border border-sage-200 rounded-xl placeholder-sage-400 text-sage-700 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent focus:bg-white transition-all"
                   placeholder="••••••••"
                 />
               </div>
             </div>
 
             {error && (
-              <div className="rounded-md bg-red-50 p-4">
-                <p className="text-sm text-red-800">{error}</p>
+              <div className="rounded-xl bg-rose-50 border border-rose-200 p-4">
+                <p className="text-sm text-rose-700">{error}</p>
               </div>
             )}
 
@@ -169,15 +187,27 @@ const Auth = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-slate-700 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-medium text-white bg-gradient-to-r from-sage-600 to-sage-500 hover:from-sage-700 hover:to-sage-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sage-400 disabled:opacity-50 disabled:cursor-not-allowed transform transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 {loading ? (
                   <>
                     <Loader className="animate-spin h-5 w-5 mr-2" />
-                    Processing...
+                    <span>Processing...</span>
                   </>
                 ) : (
-                  isSignUp ? 'Sign Up' : 'Sign In'
+                  <>
+                    {isSignUp ? (
+                      <>
+                        <Sparkles className="h-5 w-5 mr-2" />
+                        <span>Begin Your Journey</span>
+                      </>
+                    ) : (
+                      <>
+                        <Heart className="h-5 w-5 mr-2" />
+                        <span>Welcome Back</span>
+                      </>
+                    )}
+                  </>
                 )}
               </button>
             </div>
@@ -186,17 +216,17 @@ const Auth = () => {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
+                <div className="w-full border-t border-sage-200" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-slate-500">Or continue with</span>
+                <span className="px-4 bg-white text-sage-500 font-light">Or continue with</span>
               </div>
             </div>
 
             <div className="mt-6">
               <button
                 onClick={handleGoogleSignIn}
-                className="w-full flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-gray-50"
+                className="w-full flex justify-center items-center px-4 py-3 border border-sage-200 rounded-xl shadow-sm text-sm font-medium text-sage-700 bg-white hover:bg-cream-50 hover:border-sage-300 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
@@ -229,9 +259,19 @@ const Auth = () => {
                 setError(null)
                 setFormData({ email: '', password: '', fullName: '' })
               }}
-              className="text-sm text-slate-600 hover:text-slate-900"
+              className="group text-sm text-sage-600 hover:text-sage-800 font-light transition-colors"
             >
-              {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
+              {isSignUp ? (
+                <span className="flex items-center justify-center gap-2">
+                  Already have an account?
+                  <span className="font-medium group-hover:underline">Sign in</span>
+                </span>
+              ) : (
+                <span className="flex items-center justify-center gap-2">
+                  Don't have an account?
+                  <span className="font-medium group-hover:underline">Join us</span>
+                </span>
+              )}
             </button>
           </div>
         </div>
