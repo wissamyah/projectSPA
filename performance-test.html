@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Test Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .test-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .test-card h2 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .metric:last-child {
+            border-bottom: none;
+        }
+        .metric-name {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        .metric-value {
+            font-weight: bold;
+            color: #2d3748;
+        }
+        .improvement {
+            color: #48bb78;
+            font-size: 0.85rem;
+        }
+        .degradation {
+            color: #f56565;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .controls {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background: #edf2f7;
+            color: #4a5568;
+        }
+        .success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        .error {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: #667eea;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .chart {
+            height: 200px;
+            background: #f7fafc;
+            border-radius: 5px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 10px;
+            margin-top: 15px;
+        }
+        .bar {
+            width: 40px;
+            background: linear-gradient(to top, #667eea, #764ba2);
+            border-radius: 3px 3px 0 0;
+            position: relative;
+            transition: height 0.5s ease;
+        }
+        .bar-label {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            color: #718096;
+            white-space: nowrap;
+        }
+        .bar-value {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Performance Test Dashboard</h1>
+
+        <div class="controls">
+            <button onclick="runAllTests()">Run All Tests</button>
+            <button onclick="testCurrentPage()">Test Current Page</button>
+            <button onclick="testBundleSize()">Test Bundle Size</button>
+            <button onclick="testCacheEfficiency()">Test Cache</button>
+            <div id="status" class="status">Ready to test...</div>
+        </div>
+
+        <div class="test-grid">
+            <div class="test-card">
+                <h2>📦 Bundle Size</h2>
+                <div class="metric">
+                    <span class="metric-name">Main Bundle</span>
+                    <span class="metric-value" id="mainBundle">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">Total Size</span>
+                    <span class="metric-value" id="totalSize">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">Compressed (Brotli)</span>
+                    <span class="metric-value" id="compressedSize">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">Number of Chunks</span>
+                    <span class="metric-value" id="chunkCount">-</span>
+                </div>
+            </div>
+
+            <div class="test-card">
+                <h2>⚡ Load Performance</h2>
+                <div class="metric">
+                    <span class="metric-name">First Contentful Paint</span>
+                    <span class="metric-value" id="fcp">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">DOM Ready</span>
+                    <span class="metric-value" id="domReady">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">Page Load</span>
+                    <span class="metric-value" id="pageLoad">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">Total Requests</span>
+                    <span class="metric-value" id="requests">-</span>
+                </div>
+            </div>
+
+            <div class="test-card">
+                <h2>💾 Cache Efficiency</h2>
+                <div class="metric">
+                    <span class="metric-name">Cached Resources</span>
+                    <span class="metric-value" id="cachedCount">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">Cache Hit Rate</span>
+                    <span class="metric-value" id="cacheHitRate">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">Transfer Size</span>
+                    <span class="metric-value" id="transferSize">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">From Cache</span>
+                    <span class="metric-value" id="fromCache">-</span>
+                </div>
+            </div>
+
+            <div class="test-card">
+                <h2>🎯 API Performance</h2>
+                <div class="metric">
+                    <span class="metric-name">API Calls</span>
+                    <span class="metric-value" id="apiCalls">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">Avg Response Time</span>
+                    <span class="metric-value" id="avgApiTime">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">Data Transferred</span>
+                    <span class="metric-value" id="apiData">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">Failed Requests</span>
+                    <span class="metric-value" id="failedRequests">-</span>
+                </div>
+            </div>
+
+            <div class="test-card">
+                <h2>📊 Memory Usage</h2>
+                <div class="metric">
+                    <span class="metric-name">JS Heap Size</span>
+                    <span class="metric-value" id="heapSize">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">DOM Nodes</span>
+                    <span class="metric-value" id="domNodes">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">JS Event Listeners</span>
+                    <span class="metric-value" id="listeners">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">Memory Used</span>
+                    <span class="metric-value" id="memoryUsed">-</span>
+                </div>
+            </div>
+
+            <div class="test-card">
+                <h2>📈 Comparison Chart</h2>
+                <div class="chart" id="chart">
+                    <div class="bar" style="height: 0%">
+                        <span class="bar-value">0</span>
+                        <span class="bar-label">Before</span>
+                    </div>
+                    <div class="bar" style="height: 0%">
+                        <span class="bar-value">0</span>
+                        <span class="bar-label">After</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Performance testing functions
+        async function runAllTests() {
+            updateStatus('Running all tests...', 'loading');
+
+            await testCurrentPage();
+            await delay(500);
+            await testBundleSize();
+            await delay(500);
+            await testCacheEfficiency();
+
+            updateStatus('All tests completed!', 'success');
+            updateChart();
+        }
+
+        async function testCurrentPage() {
+            updateStatus('Testing current page performance...', 'loading');
+
+            // Navigation timing
+            const perfData = performance.timing;
+            const paintMetrics = performance.getEntriesByType('paint');
+
+            // Calculate metrics
+            const domReady = perfData.domContentLoadedEventEnd - perfData.navigationStart;
+            const pageLoad = perfData.loadEventEnd - perfData.navigationStart;
+            const fcp = paintMetrics.find(p => p.name === 'first-contentful-paint')?.startTime || 0;
+
+            // Update UI
+            document.getElementById('domReady').textContent = `${domReady}ms`;
+            document.getElementById('pageLoad').textContent = `${pageLoad}ms`;
+            document.getElementById('fcp').textContent = `${Math.round(fcp)}ms`;
+
+            // Count resources
+            const resources = performance.getEntriesByType('resource');
+            document.getElementById('requests').textContent = resources.length;
+
+            // Memory info (if available)
+            if (performance.memory) {
+                const heapSize = (performance.memory.usedJSHeapSize / 1048576).toFixed(2);
+                document.getElementById('heapSize').textContent = `${heapSize} MB`;
+                const totalMemory = (performance.memory.totalJSHeapSize / 1048576).toFixed(2);
+                document.getElementById('memoryUsed').textContent = `${heapSize}/${totalMemory} MB`;
+            }
+
+            // DOM metrics
+            document.getElementById('domNodes').textContent = document.getElementsByTagName('*').length;
+
+            updateStatus('Page performance test completed', 'success');
+        }
+
+        async function testBundleSize() {
+            updateStatus('Analyzing bundle sizes...', 'loading');
+
+            const resources = performance.getEntriesByType('resource');
+            const jsResources = resources.filter(r => r.name.includes('.js'));
+            const cssResources = resources.filter(r => r.name.includes('.css'));
+
+            let totalSize = 0;
+            let compressedSize = 0;
+
+            resources.forEach(resource => {
+                totalSize += resource.encodedBodySize || 0;
+                compressedSize += resource.transferSize || 0;
+            });
+
+            // Find main bundle
+            const mainBundle = jsResources.find(r => r.name.includes('index-')) || jsResources[0];
+            if (mainBundle) {
+                const mainSize = (mainBundle.encodedBodySize / 1024).toFixed(2);
+                document.getElementById('mainBundle').textContent = `${mainSize} KB`;
+            }
+
+            document.getElementById('totalSize').textContent = `${(totalSize / 1024).toFixed(2)} KB`;
+            document.getElementById('compressedSize').textContent = `${(compressedSize / 1024).toFixed(2)} KB`;
+            document.getElementById('chunkCount').textContent = jsResources.length;
+
+            updateStatus('Bundle analysis completed', 'success');
+        }
+
+        async function testCacheEfficiency() {
+            updateStatus('Testing cache efficiency...', 'loading');
+
+            const resources = performance.getEntriesByType('resource');
+            let cachedCount = 0;
+            let totalTransfer = 0;
+            let cachedTransfer = 0;
+
+            resources.forEach(resource => {
+                if (resource.transferSize === 0 && resource.encodedBodySize > 0) {
+                    cachedCount++;
+                    cachedTransfer += resource.encodedBodySize;
+                } else {
+                    totalTransfer += resource.transferSize || 0;
+                }
+            });
+
+            const cacheHitRate = resources.length > 0
+                ? ((cachedCount / resources.length) * 100).toFixed(1)
+                : 0;
+
+            document.getElementById('cachedCount').textContent = `${cachedCount}/${resources.length}`;
+            document.getElementById('cacheHitRate').textContent = `${cacheHitRate}%`;
+            document.getElementById('transferSize').textContent = `${(totalTransfer / 1024).toFixed(2)} KB`;
+            document.getElementById('fromCache').textContent = `${(cachedTransfer / 1024).toFixed(2)} KB`;
+
+            // API performance
+            const apiRequests = resources.filter(r =>
+                r.name.includes('supabase') ||
+                r.initiatorType === 'fetch' ||
+                r.initiatorType === 'xmlhttprequest'
+            );
+
+            document.getElementById('apiCalls').textContent = apiRequests.length;
+
+            if (apiRequests.length > 0) {
+                const avgTime = apiRequests.reduce((sum, r) => sum + r.duration, 0) / apiRequests.length;
+                document.getElementById('avgApiTime').textContent = `${Math.round(avgTime)}ms`;
+
+                const apiData = apiRequests.reduce((sum, r) => sum + (r.transferSize || 0), 0);
+                document.getElementById('apiData').textContent = `${(apiData / 1024).toFixed(2)} KB`;
+            }
+
+            updateStatus('Cache efficiency test completed', 'success');
+        }
+
+        function updateChart() {
+            // Simulated before/after comparison (you'd replace with actual data)
+            const beforeSize = 661; // KB
+            const afterSize = 114; // KB
+
+            const maxSize = Math.max(beforeSize, afterSize);
+            const bars = document.querySelectorAll('.bar');
+
+            bars[0].style.height = `${(beforeSize / maxSize) * 100}%`;
+            bars[0].querySelector('.bar-value').textContent = `${beforeSize}KB`;
+
+            bars[1].style.height = `${(afterSize / maxSize) * 100}%`;
+            bars[1].querySelector('.bar-value').textContent = `${afterSize}KB`;
+        }
+
+        function updateStatus(message, type = '') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+
+            if (type === 'loading') {
+                status.innerHTML = `<span class="loading"></span> ${message}`;
+            }
+        }
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Auto-run basic test on load
+        window.addEventListener('load', () => {
+            setTimeout(testCurrentPage, 1000);
+        });
+    </script>
+</body>
+</html>

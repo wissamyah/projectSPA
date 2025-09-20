@@ -6,20 +6,18 @@ export const checkIsAdmin = async (): Promise<boolean> => {
 
     if (!session?.user) return false
 
-    // Check if this user is the admin based on setup
-    const adminEmail = localStorage.getItem('spa_admin_email')
+    // Check user_profiles table for role
+    const { data: profile, error } = await supabase
+      .from('user_profiles')
+      .select('role')
+      .eq('id', session.user.id)
+      .single()
 
-    if (adminEmail && session.user.email === adminEmail) {
+    if (!error && profile?.role === 'admin') {
       return true
     }
 
-    // Also check for specific admin emails (can be customized)
-    const adminEmails = [
-      'admin@spa.com',
-      'admin@example.com'
-    ]
-
-    return adminEmails.includes(session.user.email || '')
+    return false
   } catch (error) {
     console.error('Error checking admin status:', error)
     return false

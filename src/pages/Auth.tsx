@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Mail, Lock, User, Loader, Sparkles, Heart, Flower2, Droplets } from 'lucide-react'
 import { useModal } from '../contexts/ModalContext'
+import { useAuth } from '../contexts/AuthContext'
 
 const Auth = () => {
   const navigate = useNavigate()
+  const { user, loading: authLoading } = useAuth()
   const [isSignUp, setIsSignUp] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -15,6 +17,13 @@ const Auth = () => {
     fullName: ''
   })
   const { showAlert } = useModal()
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (user && !authLoading) {
+      navigate('/dashboard')
+    }
+  }, [user, authLoading, navigate])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -32,29 +41,48 @@ const Auth = () => {
     try {
       if (isSignUp) {
         // Sign up
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: formData.email,
           password: formData.password,
           options: {
             data: {
-              full_name: formData.fullName
-            }
+              full_name: formData.fullName,
+              role: 'customer' // Default role for new users
+            },
+            emailRedirectTo: `${window.location.origin}/dashboard`
           }
         })
-        
+
         if (error) throw error
-        
-        await showAlert('Check your email for the confirmation link!', 'success')
+
+        // Check if user was created and session exists (auto-confirmed email)
+        if (data?.user && data?.session) {
+          // User is logged in automatically (email auto-confirmed)
+          await showAlert('Welcome! Your account has been created.', 'success')
+          navigate('/dashboard')
+        } else if (data?.user && !data?.session) {
+          // Email confirmation is required
+          await showAlert('Please check your email to confirm your account.', 'info')
+          // Clear form
+          setFormData({ email: '', password: '', fullName: '' })
+        }
       } else {
         // Sign in
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password
         })
-        
-        if (error) throw error
-        
-        navigate('/dashboard')
+
+        if (error) {
+          // Check if it's an email not confirmed error
+          if (error.message.includes('Email not confirmed')) {
+            setError('Please confirm your email before signing in. Check your inbox for the confirmation link.')
+          } else {
+            throw error
+          }
+        } else if (data?.session) {
+          navigate('/dashboard')
+        }
       }
     } catch (error: any) {
       setError(error.message)
@@ -78,8 +106,29 @@ const Auth = () => {
     }
   }
 
+  // Show loading state while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cream-50 via-white to-sage-50">
+        <div className="text-center">
+          <div className="inline-flex items-center space-x-2">
+            <div className="w-2 h-2 bg-sage-600 rounded-full animate-bounce"></div>
+            <div className="w-2 h-2 bg-sage-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+            <div className="w-2 h-2 bg-sage-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          </div>
+          <p className="text-stone-600 mt-4">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // If user is authenticated, they'll be redirected by the useEffect
+  if (user) {
+    return null
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cream-50 via-white to-sage-50 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cream-50 via-white to-sage-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-sage-100/30 to-gold-100/30 rounded-full blur-3xl animate-pulse"></div>
@@ -91,15 +140,6 @@ const Auth = () => {
 
       <div className="max-w-md w-full space-y-8 relative z-10">
         <div className="text-center">
-          <div className="flex justify-center mb-6">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-sage-400 to-gold-400 rounded-full blur-lg opacity-60 animate-pulse"></div>
-              <div className="relative bg-white rounded-full p-4 shadow-xl">
-                <Droplets className="h-12 w-12 text-sage-600" />
-              </div>
-            </div>
-          </div>
-
           <h2 className="text-4xl font-display bg-gradient-to-r from-sage-700 to-sage-500 bg-clip-text text-transparent">
             {isSignUp ? 'Join Our Sanctuary' : 'Welcome Back'}
           </h2>

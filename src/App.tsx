@@ -3,8 +3,10 @@ import { lazy, Suspense } from 'react'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from './lib/queryClient'
 import { ModalProvider } from './contexts/ModalContext'
+import { AuthProvider } from './contexts/AuthContext'
 import PublicLayout from './layouts/PublicLayout'
 import AppLayout from './layouts/AppLayout'
+import AdminRoute from './components/AdminRoute'
 import RouteLoadingFallback from './components/RouteLoadingFallback'
 
 // Eager load customer-facing pages for best performance
@@ -28,6 +30,7 @@ const AdminArchive = lazy(() => import('./pages/AdminArchive'))
 const StaffSchedule = lazy(() => import('./pages/StaffSchedule'))
 const EmailViewer = lazy(() => import('./pages/EmailViewer'))
 const Setup = lazy(() => import('./pages/Setup'))
+const DebugAuth = lazy(() => import('./pages/DebugAuth'))
 
 // Lazy load React Query Devtools only in development
 const ReactQueryDevtools = import.meta.env.DEV
@@ -41,8 +44,9 @@ const ReactQueryDevtools = import.meta.env.DEV
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ModalProvider>
-        <Router>
+      <AuthProvider>
+        <ModalProvider>
+          <Router>
           <Routes>
         {/* Public routes with landing page layout */}
         <Route path="/" element={<PublicLayout />}>
@@ -56,39 +60,53 @@ function App() {
           <Route path="book" element={<Book />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="admin" element={
-            <Suspense fallback={<RouteLoadingFallback />}>
-              <Admin />
-            </Suspense>
+            <AdminRoute>
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <Admin />
+              </Suspense>
+            </AdminRoute>
           } />
           <Route path="admin/settings" element={
-            <Suspense fallback={<RouteLoadingFallback />}>
-              <AdminSettings />
-            </Suspense>
+            <AdminRoute>
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <AdminSettings />
+              </Suspense>
+            </AdminRoute>
           } />
           <Route path="admin/staff" element={
-            <Suspense fallback={<RouteLoadingFallback />}>
-              <AdminStaff />
-            </Suspense>
+            <AdminRoute>
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <AdminStaff />
+              </Suspense>
+            </AdminRoute>
           } />
           <Route path="admin/services" element={
-            <Suspense fallback={<RouteLoadingFallback />}>
-              <AdminServices />
-            </Suspense>
+            <AdminRoute>
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <AdminServices />
+              </Suspense>
+            </AdminRoute>
           } />
           <Route path="admin/categories" element={
-            <Suspense fallback={<RouteLoadingFallback />}>
-              <AdminCategories />
-            </Suspense>
+            <AdminRoute>
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <AdminCategories />
+              </Suspense>
+            </AdminRoute>
           } />
           <Route path="admin/schedule" element={
-            <Suspense fallback={<RouteLoadingFallback />}>
-              <AdminSchedule />
-            </Suspense>
+            <AdminRoute>
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <AdminSchedule />
+              </Suspense>
+            </AdminRoute>
           } />
           <Route path="admin/archive" element={
-            <Suspense fallback={<RouteLoadingFallback />}>
-              <AdminArchive />
-            </Suspense>
+            <AdminRoute>
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <AdminArchive />
+              </Suspense>
+            </AdminRoute>
           } />
           <Route path="emails" element={
             <Suspense fallback={<RouteLoadingFallback />}>
@@ -111,11 +129,19 @@ function App() {
           </Suspense>
         } />
 
+        {/* Debug auth route for checking role issues */}
+        <Route path="/debug-auth" element={
+          <Suspense fallback={<RouteLoadingFallback />}>
+            <DebugAuth />
+          </Suspense>
+        } />
+
         {/* 404 catch-all route */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
     </ModalProvider>
+    </AuthProvider>
     {import.meta.env.DEV && (
       <Suspense fallback={null}>
         <ReactQueryDevtools initialIsOpen={false} />

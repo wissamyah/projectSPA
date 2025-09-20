@@ -1,12 +1,12 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Flower2, Menu, X, User, Sparkles, ChevronDown } from 'lucide-react'
+import { Flower2, Menu, X, User, Sparkles, Shield } from 'lucide-react'
 import { useState, useEffect } from 'react'
-import { supabase } from '../../lib/supabase'
+import { useAuth } from '../../contexts/AuthContext'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const [user, setUser] = useState<any>(null)
+  const { user, isAdmin, signOut } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -14,13 +14,6 @@ const Navbar = () => {
   const transparentPages = ['/', '/book', '/services', '/dashboard', '/admin']
   const isTransparentPage = transparentPages.includes(location.pathname) || location.pathname.startsWith('/admin')
 
-  useEffect(() => {
-    checkUser()
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null)
-    })
-    return () => subscription.unsubscribe()
-  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,13 +23,8 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const checkUser = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    setUser(session?.user || null)
-  }
-
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
+    await signOut()
     navigate('/')
   }
 
@@ -120,16 +108,17 @@ const Navbar = () => {
                     location.pathname === '/dashboard' ? 'w-full' : 'w-0 group-hover:w-full'
                   }`}></span>
                 </Link>
-                {/* Temporarily allow all users to access admin */}
-                {user && (
+                {/* Show admin link only to admin users */}
+                {isAdmin && (
                   <Link
                     to="/admin"
-                    className={`font-light transition-colors duration-500 relative group ${
+                    className={`font-light transition-colors duration-500 relative group flex items-center gap-1 ${
                       location.pathname.startsWith('/admin')
                         ? isScrolled ? 'text-sage-600' : 'text-sage-700'
                         : isScrolled ? 'text-stone-700 hover:text-sage-600' : 'text-stone-800 hover:text-stone-900'
                     }`}
                   >
+                    <Shield className="h-4 w-4" />
                     Admin
                     <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-sage-500 to-spa-500 transition-all duration-300 ${
                       location.pathname.startsWith('/admin') ? 'w-full' : 'w-0 group-hover:w-full'
@@ -209,17 +198,18 @@ const Navbar = () => {
                 >
                   Dashboard
                 </Link>
-                {/* Temporarily allow all users to access admin */}
-                {user && (
+                {/* Show admin link only to admin users */}
+                {isAdmin && (
                   <Link
                     to="/admin"
                     onClick={() => setIsMenuOpen(false)}
-                    className={`block py-3 px-4 rounded-lg transition-all duration-200 ${
+                    className={`flex items-center gap-2 py-3 px-4 rounded-lg transition-all duration-200 ${
                       location.pathname.startsWith('/admin')
                         ? 'bg-sage-100 text-sage-700'
                         : 'text-stone-700 hover:bg-sage-50 hover:text-sage-700'
                     }`}
                   >
+                    <Shield className="h-4 w-4" />
                     Admin
                   </Link>
                 )}

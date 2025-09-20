@@ -18,7 +18,9 @@
       "Bash(git commit:*)",
       "Bash(npx tsc:*)",
       "Bash(git checkout:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(npx kill-port:*)",
+      "Bash(del \"C:\\Users\\wissa\\Documents\\spaBookingApp\\src\\pages\\AdminPromotion.tsx\")"
     ],
     "deny": [],
     "ask": []

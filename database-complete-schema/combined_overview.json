@@ -1,0 +1,35 @@
+[
+    {
+      "structure": "TABLE: archived_bookings (id uuid NOT NULL, customer_name text NOT NULL, customer_email text NOT NULL, customer_phone text, service_id integer, service_uuid uuid, staff_id uuid, booking_date date NOT NULL, booking_time time without time zone NOT NULL, status text NOT NULL, notes text, created_at timestamp with time zone, updated_at timestamp with time zone, archived_at timestamp with time zone)"
+    },
+    {
+      "structure": "TABLE: bookings (id uuid NOT NULL, user_id uuid, service_id text NOT NULL, booking_date date NOT NULL, booking_time time without time zone NOT NULL, status text, customer_name text NOT NULL, customer_email text NOT NULL, customer_phone text, notes text, created_at timestamp with time zone, updated_at timestamp with time zone, staff_id uuid, service_uuid uuid, google_event_id text, google_calendar_synced boolean, last_sync_at timestamp with time zone)"
+    },
+    {
+      "structure": "TABLE: calendar_sync_logs (id uuid NOT NULL, booking_id uuid, action text NOT NULL, status text NOT NULL, error_message text, google_event_id text, created_at timestamp with time zone)"
+    },
+    {
+      "structure": "TABLE: calendar_sync_queue (id uuid NOT NULL, booking_id uuid NOT NULL, action text NOT NULL, booking_data jsonb NOT NULL, status text, attempts integer, last_error text, created_at timestamp with time zone, processed_at timestamp with time zone)"
+    },
+    {
+      "structure": "TABLE: service_categories (id uuid NOT NULL, name text NOT NULL, display_order integer, created_at timestamp with time zone)"
+    },
+    {
+      "structure": "TABLE: services (id uuid NOT NULL, category_id uuid, name text NOT NULL, description text, duration integer NOT NULL, price numeric NOT NULL, max_concurrent integer, requires_room boolean, is_active boolean, display_order integer, created_at timestamp with time zone, updated_at timestamp with time zone)"
+    },
+    {
+      "structure": "TABLE: staff (id uuid NOT NULL, name text NOT NULL, email text, phone text, specialization text, bio text, avatar_url text, is_active boolean, hire_date date, created_at timestamp with time zone, updated_at timestamp with time zone)"
+    },
+    {
+      "structure": "TABLE: staff_categories (id uuid NOT NULL, staff_id uuid NOT NULL, category_id uuid NOT NULL, created_at timestamp with time zone)"
+    },
+    {
+      "structure": "TABLE: staff_schedules (id uuid NOT NULL, staff_id uuid NOT NULL, day_of_week integer, start_time time without time zone NOT NULL, end_time time without time zone NOT NULL, is_available boolean, created_at timestamp with time zone)"
+    },
+    {
+      "structure": "TABLE: staff_services (id uuid NOT NULL, staff_id uuid NOT NULL, service_id uuid NOT NULL, is_primary boolean, created_at timestamp with time zone)"
+    },
+    {
+      "structure": "TABLE: user_profiles (id uuid NOT NULL, role text NOT NULL, full_name text, phone text, created_at timestamp with time zone, updated_at timestamp with time zone)"
+    }
+  ]

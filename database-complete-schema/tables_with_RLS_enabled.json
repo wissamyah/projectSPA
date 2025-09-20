@@ -1,52 +1,57 @@
 [
-    {
-      "schemaname": "public",
-      "tablename": "archived_bookings",
-      "rowsecurity": false
-    },
-    {
-      "schemaname": "public",
-      "tablename": "bookings",
-      "rowsecurity": true
-    },
-    {
-      "schemaname": "public",
-      "tablename": "calendar_sync_logs",
-      "rowsecurity": true
-    },
-    {
-      "schemaname": "public",
-      "tablename": "calendar_sync_queue",
-      "rowsecurity": false
-    },
-    {
-      "schemaname": "public",
-      "tablename": "service_categories",
-      "rowsecurity": true
-    },
-    {
-      "schemaname": "public",
-      "tablename": "services",
-      "rowsecurity": false
-    },
-    {
-      "schemaname": "public",
-      "tablename": "staff",
-      "rowsecurity": true
-    },
-    {
-      "schemaname": "public",
-      "tablename": "staff_categories",
-      "rowsecurity": true
-    },
-    {
-      "schemaname": "public",
-      "tablename": "staff_schedules",
-      "rowsecurity": true
-    },
-    {
-      "schemaname": "public",
-      "tablename": "staff_services",
-      "rowsecurity": true
-    }
-  ]
+  {
+    "schemaname": "public",
+    "tablename": "archived_bookings",
+    "rowsecurity": false
+  },
+  {
+    "schemaname": "public",
+    "tablename": "bookings",
+    "rowsecurity": true
+  },
+  {
+    "schemaname": "public",
+    "tablename": "calendar_sync_logs",
+    "rowsecurity": true
+  },
+  {
+    "schemaname": "public",
+    "tablename": "calendar_sync_queue",
+    "rowsecurity": false
+  },
+  {
+    "schemaname": "public",
+    "tablename": "service_categories",
+    "rowsecurity": true
+  },
+  {
+    "schemaname": "public",
+    "tablename": "services",
+    "rowsecurity": false
+  },
+  {
+    "schemaname": "public",
+    "tablename": "staff",
+    "rowsecurity": true
+  },
+  {
+    "schemaname": "public",
+    "tablename": "staff_categories",
+    "rowsecurity": true
+  },
+  {
+    "schemaname": "public",
+    "tablename": "staff_schedules",
+    "rowsecurity": true
+  },
+  {
+    "schemaname": "public",
+    "tablename": "staff_services",
+    "rowsecurity": true
+  },
+  {
+    "schemaname": "public",
+    "tablename": "user_profiles",
+    "rowsecurity": true
+  }
+]
