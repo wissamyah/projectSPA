@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
 import { sendCancellationNotification } from '../services/emailService'
 import { useModal } from '../contexts/ModalContext'
+import { useAuth } from '../contexts/AuthContext'
 import Tooltip from '../components/Tooltip'
 
 interface Service {
@@ -28,7 +29,7 @@ interface Booking {
 
 const Dashboard = () => {
   const [bookings, setBookings] = useState<Booking[]>([])
-  const [user, setUser] = useState<any>(null)
+  const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [services, setServices] = useState<{ [key: string]: string }>({}) // For fallback
   const [showCancelModal, setShowCancelModal] = useState(false)
@@ -38,17 +39,17 @@ const Dashboard = () => {
   const { showAlert } = useModal()
 
   useEffect(() => {
-    fetchUserAndBookings()
-    fetchServices()
-  }, [])
+    if (user) {
+      fetchUserAndBookings()
+      fetchServices()
+    } else {
+      setLoading(false)
+    }
+  }, [user])
 
   const fetchUserAndBookings = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (session?.user) {
-        setUser(session.user)
-        
+      if (user) {
         const { data, error } = await supabase
           .from('bookings')
           .select(`
@@ -56,9 +57,9 @@ const Dashboard = () => {
             service:service_uuid(id, name),
             staff:staff_id(id, name)
           `)
-          .eq('user_id', session.user.id)
+          .eq('user_id', user.id)
           .order('booking_date', { ascending: false })
-        
+
         if (error) throw error
         setBookings(data || [])
       }

@@ -9,6 +9,7 @@ import {
   SlotUnavailableReason
 } from '../utils/businessHours'
 import { useModal } from '../contexts/ModalContext'
+import { useAuth } from '../contexts/AuthContext'
 
 interface Service {
   id: string
@@ -50,7 +51,7 @@ const Book = () => {
     notes: ''
   })
 
-  const [user, setUser] = useState<any>(null)
+  const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [bookedSlots, setBookedSlots] = useState<string[]>([])
   const [allStaffForService, setAllStaffForService] = useState<Staff[]>([])
@@ -72,8 +73,16 @@ const Book = () => {
   ]
 
   useEffect(() => {
-    checkUser()
     fetchAvailableServices()
+
+    // Set user data when available
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        customer_name: user.user_metadata?.full_name || '',
+        customer_email: user.email || ''
+      }))
+    }
 
     // Check for reschedule data
     const rescheduleData = sessionStorage.getItem('rescheduleBooking')
@@ -90,7 +99,7 @@ const Book = () => {
       }
       sessionStorage.removeItem('rescheduleBooking')
     }
-  }, [])
+  }, [user])
 
   useEffect(() => {
     if (formData.booking_date && formData.service_id) {
@@ -235,17 +244,6 @@ const Book = () => {
     }
   }
 
-  const checkUser = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session?.user) {
-      setUser(session.user)
-      setFormData(prev => ({
-        ...prev,
-        customer_name: session.user.user_metadata?.full_name || '',
-        customer_email: session.user.email || ''
-      }))
-    }
-  }
 
   const checkAvailability = async () => {
     setCheckingAvailability(true)
