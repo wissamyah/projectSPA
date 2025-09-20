@@ -1,69 +1,12 @@
 import { Navigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 
 interface AdminRouteProps {
   children: React.ReactNode
 }
 
 const AdminRoute = ({ children }: AdminRouteProps) => {
-  const [loading, setLoading] = useState(true)
-  const [isAdmin, setIsAdmin] = useState(false)
-
-  useEffect(() => {
-    checkAdminStatus()
-  }, [])
-
-  const checkAdminStatus = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-
-      if (!session?.user) {
-        setIsAdmin(false)
-        setLoading(false)
-        return
-      }
-
-      // Check localStorage first (fallback for when DB isn't set up)
-      const adminEmail = localStorage.getItem('spa_admin_email')
-
-      if (adminEmail && session.user.email === adminEmail) {
-        setIsAdmin(true)
-        setLoading(false)
-
-        // Try to ensure the user has admin role in database
-        await supabase
-          .from('user_profiles')
-          .upsert({
-            id: session.user.id,
-            role: 'admin',
-            full_name: session.user.user_metadata?.full_name || session.user.email
-          })
-        return
-      }
-
-      // Check user role from user_profiles table
-      const { data: profile, error } = await supabase
-        .from('user_profiles')
-        .select('role')
-        .eq('id', session.user.id)
-        .single()
-
-      if (error) {
-        console.error('Error fetching user profile:', error)
-        // Final check: is this one of the default admin emails?
-        const adminEmails = ['admin@spa.com', 'admin@example.com']
-        setIsAdmin(adminEmails.includes(session.user.email || ''))
-      } else {
-        setIsAdmin(profile?.role === 'admin')
-      }
-    } catch (error) {
-      console.error('Error checking admin status:', error)
-      setIsAdmin(false)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { loading, isAdmin, user } = useAuth()
 
   if (loading) {
     return (
@@ -80,6 +23,12 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
     )
   }
 
+  // If not logged in, redirect to auth
+  if (!user) {
+    return <Navigate to="/auth" replace />
+  }
+
+  // If logged in but not admin, redirect to dashboard
   if (!isAdmin) {
     return <Navigate to="/dashboard" replace />
   }

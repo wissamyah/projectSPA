@@ -15,8 +15,11 @@ export const queryClient = new QueryClient({
       // Refetch on window focus (good for real-time updates)
       refetchOnWindowFocus: true,
 
-      // Don't refetch on reconnect by default
+      // Refetch on reconnect
       refetchOnReconnect: 'always',
+
+      // Network mode - continue fetching in background
+      networkMode: 'online',
     },
     mutations: {
       // Retry failed mutations once

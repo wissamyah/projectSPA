@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
 import { queryKeys, staleTimes } from '../lib/queryClient'
+import { handleAuthError, authRetryConfig } from '../utils/authErrorHandler'
 
 interface Service {
   id: string
@@ -18,16 +19,16 @@ export function useServices() {
   return useQuery({
     queryKey: queryKeys.servicesActive(),
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('is_active', true)
-        .order('name')
-
-      if (error) throw error
-      return data as Service[]
+      return handleAuthError<Service[]>(async () => {
+        return await supabase
+          .from('services')
+          .select('*')
+          .eq('is_active', true)
+          .order('name')
+      })
     },
     staleTime: staleTimes.static, // 10 minutes
+    ...authRetryConfig
   })
 }
 

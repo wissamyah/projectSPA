@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { Shield, Database, Key, RefreshCw, Check, X } from 'lucide-react'
+import { Shield, Database, RefreshCw, Check, X } from 'lucide-react'
 
 const DebugAuth = () => {
   const { user, role, isAdmin, refreshRole } = useAuth()
@@ -27,10 +27,6 @@ const DebugAuth = () => {
       },
       currentRole: role,
       isAdmin: isAdmin,
-      localStorage: {
-        adminEmail: localStorage.getItem('spa_admin_email'),
-        setupCompleted: localStorage.getItem('spa_admin_setup_completed')
-      },
       database: {}
     }
 
@@ -57,51 +53,14 @@ const DebugAuth = () => {
     setLoading(false)
   }
 
-  const fixAdminRole = async () => {
-    if (!user) return
-
-    setLoading(true)
-
-    try {
-      // Step 1: Set in localStorage
-      localStorage.setItem('spa_admin_email', user.email || '')
-      localStorage.setItem('spa_admin_setup_completed', 'true')
-
-      // Step 2: Update/create database profile
-      const { error } = await supabase
-        .from('user_profiles')
-        .upsert({
-          id: user.id,
-          role: 'admin',
-          full_name: user.user_metadata?.full_name || user.email,
-          updated_at: new Date().toISOString()
-        })
-
-      if (error) {
-        console.error('Database error:', error)
-      }
-
-      // Step 3: Refresh role
-      await refreshRole()
-
-      // Step 4: Recheck everything
-      await checkEverything()
-
-      alert('Admin role has been fixed! Please refresh the page.')
-    } catch (error) {
-      console.error('Fix error:', error)
-      alert('Error fixing admin role. Check console.')
-    } finally {
-      setLoading(false)
-    }
+  const promoteToAdmin = async () => {
+    alert('To become an admin, run this SQL command in Supabase:\n\nSELECT setup_initial_admin(\'your-email@example.com\');\n\nReplace with your actual email address.')
   }
 
-  const clearAdminStatus = () => {
-    localStorage.removeItem('spa_admin_email')
-    localStorage.removeItem('spa_admin_setup_completed')
-    localStorage.removeItem('spa_admin_id')
-    alert('Admin status cleared from localStorage. Please refresh.')
-    checkEverything()
+  const refreshAuthStatus = async () => {
+    await refreshRole()
+    await checkEverything()
+    alert('Auth status refreshed!')
   }
 
   if (!user) {
@@ -169,24 +128,6 @@ const DebugAuth = () => {
                 </div>
               </div>
 
-              {/* LocalStorage Info */}
-              <div className="bg-blue-50 rounded-xl p-6">
-                <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                  <Key className="h-5 w-5" />
-                  LocalStorage
-                </h2>
-                <div className="space-y-2 text-sm">
-                  <div>
-                    <strong>Admin Email:</strong> {debugInfo.localStorage?.adminEmail || 'Not set'}
-                    {debugInfo.localStorage?.adminEmail === user.email && (
-                      <span className="ml-2 text-green-600">✓ Matches current user</span>
-                    )}
-                  </div>
-                  <div>
-                    <strong>Setup Completed:</strong> {debugInfo.localStorage?.setupCompleted || 'Not set'}
-                  </div>
-                </div>
-              </div>
 
               {/* Database Info */}
               <div className="bg-purple-50 rounded-xl p-6">
@@ -216,18 +157,18 @@ const DebugAuth = () => {
 
                 {!isAdmin && (
                   <button
-                    onClick={fixAdminRole}
-                    className="w-full px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 font-medium"
+                    onClick={promoteToAdmin}
+                    className="w-full px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium"
                   >
-                    Fix: Make Me Admin
+                    How to Become Admin
                   </button>
                 )}
 
                 <button
-                  onClick={clearAdminStatus}
-                  className="w-full px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium"
+                  onClick={refreshAuthStatus}
+                  className="w-full px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 font-medium"
                 >
-                  Clear Admin Status (Reset)
+                  Refresh Auth Status
                 </button>
 
               </div>
