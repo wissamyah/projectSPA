@@ -1,4 +1,10 @@
 {
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "dev": false
+    }
+  },
   "buildCommand": "npm install && npm run build",
   "outputDirectory": "dist",
   "framework": "vite",

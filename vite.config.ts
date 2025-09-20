@@ -58,12 +58,8 @@ export default defineConfig({
             return 'vendor'
           }
         },
-        // Optimize chunk names for better caching
-        chunkFileNames: (chunkInfo) => {
-          const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk';
-          return `assets/${facadeModuleId}-[hash].js`;
-        },
-        // Optimize entry chunk
+        // Use standard chunk naming
+        chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash][extname]'
       }
@@ -75,27 +71,20 @@ export default defineConfig({
         drop_console: true,
         drop_debugger: true,
         pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.trace'],
-        passes: 3, // More compression passes
-        unsafe_arrows: true,
-        unsafe_methods: true,
-        unsafe_proto: true,
-        unused: true, // Remove unused code
-        dead_code: true, // Remove dead code
-        collapse_vars: true, // Collapse single-use vars
-        reduce_vars: true, // Optimize variable references
-        inline: 3, // Inline functions with up to 3 uses
-        hoist_funs: true // Hoist function declarations
+        passes: 2, // Reduced from 3
+        // Removed unsafe optimizations
+        unused: true,
+        dead_code: true,
+        collapse_vars: true,
+        reduce_vars: true
       },
       mangle: {
-        properties: {
-          regex: /^_/ // Mangle properties starting with underscore
-        },
-        toplevel: true // Mangle top-level names
+        // Removed property mangling which can break runtime code
+        toplevel: false // Changed to false to prevent breaking top-level names
       },
       format: {
         comments: false,
-        ascii_only: true,
-        wrap_iife: true // Wrap IIFEs for better compression
+        ascii_only: true
       }
     },
     // Enable tree-shaking
