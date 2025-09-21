@@ -2,22 +2,12 @@
   {
     "schemaname": "public",
     "tablename": "archived_bookings",
-    "rowsecurity": false
+    "rowsecurity": true
   },
   {
     "schemaname": "public",
     "tablename": "bookings",
     "rowsecurity": true
-  },
-  {
-    "schemaname": "public",
-    "tablename": "calendar_sync_logs",
-    "rowsecurity": true
-  },
-  {
-    "schemaname": "public",
-    "tablename": "calendar_sync_queue",
-    "rowsecurity": false
   },
   {
     "schemaname": "public",
@@ -27,7 +17,7 @@
   {
     "schemaname": "public",
     "tablename": "services",
-    "rowsecurity": false
+    "rowsecurity": true
   },
   {
     "schemaname": "public",

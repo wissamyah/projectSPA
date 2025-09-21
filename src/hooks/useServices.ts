@@ -32,6 +32,27 @@ export function useServices() {
   })
 }
 
+// Fetch services with categories
+export function useServicesWithCategories() {
+  return useQuery({
+    queryKey: [...queryKeys.services(), 'withCategories'],
+    queryFn: async () => {
+      return handleAuthError(async () => {
+        return await supabase
+          .from('services')
+          .select(`
+            *,
+            category:service_categories(*)
+          `)
+          .eq('is_active', true)
+          .order('name')
+      })
+    },
+    staleTime: staleTimes.static, // 10 minutes
+    ...authRetryConfig
+  })
+}
+
 // Fetch services with staff assignments
 export function useServicesWithStaff() {
   return useQuery({

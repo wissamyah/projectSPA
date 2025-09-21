@@ -1,7 +1,7 @@
 [
   {
     "table_name": "archived_bookings",
-    "constraint_name": "2200_18928_9_not_null",
+    "constraint_name": "2200_18928_3_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -17,23 +17,7 @@
   },
   {
     "table_name": "archived_bookings",
-    "constraint_name": "2200_18928_3_not_null",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": null,
-    "foreign_column": null
-  },
-  {
-    "table_name": "archived_bookings",
     "constraint_name": "2200_18928_2_not_null",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": null,
-    "foreign_column": null
-  },
-  {
-    "table_name": "archived_bookings",
-    "constraint_name": "2200_18928_1_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -49,7 +33,23 @@
   },
   {
     "table_name": "archived_bookings",
+    "constraint_name": "2200_18928_1_not_null",
+    "constraint_type": "CHECK",
+    "column_name": null,
+    "foreign_table": null,
+    "foreign_column": null
+  },
+  {
+    "table_name": "archived_bookings",
     "constraint_name": "2200_18928_10_not_null",
+    "constraint_type": "CHECK",
+    "column_name": null,
+    "foreign_table": null,
+    "foreign_column": null
+  },
+  {
+    "table_name": "archived_bookings",
+    "constraint_name": "2200_18928_9_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -81,7 +81,7 @@
   },
   {
     "table_name": "bookings",
-    "constraint_name": "2200_17302_8_not_null",
+    "constraint_name": "2200_17302_4_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -94,6 +94,22 @@
     "column_name": null,
     "foreign_table": "bookings",
     "foreign_column": "status"
+  },
+  {
+    "table_name": "bookings",
+    "constraint_name": "2200_17302_1_not_null",
+    "constraint_type": "CHECK",
+    "column_name": null,
+    "foreign_table": null,
+    "foreign_column": null
+  },
+  {
+    "table_name": "bookings",
+    "constraint_name": "2200_17302_8_not_null",
+    "constraint_type": "CHECK",
+    "column_name": null,
+    "foreign_table": null,
+    "foreign_column": null
   },
   {
     "table_name": "bookings",
@@ -113,23 +129,7 @@
   },
   {
     "table_name": "bookings",
-    "constraint_name": "2200_17302_4_not_null",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": null,
-    "foreign_column": null
-  },
-  {
-    "table_name": "bookings",
     "constraint_name": "2200_17302_3_not_null",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": null,
-    "foreign_column": null
-  },
-  {
-    "table_name": "bookings",
-    "constraint_name": "2200_17302_1_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -145,14 +145,6 @@
   },
   {
     "table_name": "bookings",
-    "constraint_name": "bookings_service_uuid_fkey",
-    "constraint_type": "FOREIGN KEY",
-    "column_name": "service_uuid",
-    "foreign_table": "services",
-    "foreign_column": "id"
-  },
-  {
-    "table_name": "bookings",
     "constraint_name": "bookings_staff_id_fkey",
     "constraint_type": "FOREIGN KEY",
     "column_name": "staff_id",
@@ -161,122 +153,18 @@
   },
   {
     "table_name": "bookings",
+    "constraint_name": "bookings_service_uuid_fkey",
+    "constraint_type": "FOREIGN KEY",
+    "column_name": "service_uuid",
+    "foreign_table": "services",
+    "foreign_column": "id"
+  },
+  {
+    "table_name": "bookings",
     "constraint_name": "bookings_pkey",
     "constraint_type": "PRIMARY KEY",
     "column_name": "id",
     "foreign_table": "bookings",
-    "foreign_column": "id"
-  },
-  {
-    "table_name": "calendar_sync_logs",
-    "constraint_name": "calendar_sync_logs_status_check",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": "calendar_sync_logs",
-    "foreign_column": "status"
-  },
-  {
-    "table_name": "calendar_sync_logs",
-    "constraint_name": "2200_19005_1_not_null",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": null,
-    "foreign_column": null
-  },
-  {
-    "table_name": "calendar_sync_logs",
-    "constraint_name": "2200_19005_3_not_null",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": null,
-    "foreign_column": null
-  },
-  {
-    "table_name": "calendar_sync_logs",
-    "constraint_name": "2200_19005_4_not_null",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": null,
-    "foreign_column": null
-  },
-  {
-    "table_name": "calendar_sync_logs",
-    "constraint_name": "calendar_sync_logs_action_check",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": "calendar_sync_logs",
-    "foreign_column": "action"
-  },
-  {
-    "table_name": "calendar_sync_logs",
-    "constraint_name": "calendar_sync_logs_booking_id_fkey",
-    "constraint_type": "FOREIGN KEY",
-    "column_name": "booking_id",
-    "foreign_table": "bookings",
-    "foreign_column": "id"
-  },
-  {
-    "table_name": "calendar_sync_logs",
-    "constraint_name": "calendar_sync_logs_pkey",
-    "constraint_type": "PRIMARY KEY",
-    "column_name": "id",
-    "foreign_table": "calendar_sync_logs",
-    "foreign_column": "id"
-  },
-  {
-    "table_name": "calendar_sync_queue",
-    "constraint_name": "2200_19043_3_not_null",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": null,
-    "foreign_column": null
-  },
-  {
-    "table_name": "calendar_sync_queue",
-    "constraint_name": "2200_19043_4_not_null",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": null,
-    "foreign_column": null
-  },
-  {
-    "table_name": "calendar_sync_queue",
-    "constraint_name": "2200_19043_2_not_null",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": null,
-    "foreign_column": null
-  },
-  {
-    "table_name": "calendar_sync_queue",
-    "constraint_name": "2200_19043_1_not_null",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": null,
-    "foreign_column": null
-  },
-  {
-    "table_name": "calendar_sync_queue",
-    "constraint_name": "calendar_sync_queue_action_check",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": "calendar_sync_queue",
-    "foreign_column": "action"
-  },
-  {
-    "table_name": "calendar_sync_queue",
-    "constraint_name": "calendar_sync_queue_status_check",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": "calendar_sync_queue",
-    "foreign_column": "status"
-  },
-  {
-    "table_name": "calendar_sync_queue",
-    "constraint_name": "calendar_sync_queue_pkey",
-    "constraint_type": "PRIMARY KEY",
-    "column_name": "id",
-    "foreign_table": "calendar_sync_queue",
     "foreign_column": "id"
   },
   {
@@ -313,7 +201,7 @@
   },
   {
     "table_name": "services",
-    "constraint_name": "2200_17386_3_not_null",
+    "constraint_name": "2200_17386_5_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -321,7 +209,7 @@
   },
   {
     "table_name": "services",
-    "constraint_name": "2200_17386_6_not_null",
+    "constraint_name": "2200_17386_3_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -337,7 +225,7 @@
   },
   {
     "table_name": "services",
-    "constraint_name": "2200_17386_5_not_null",
+    "constraint_name": "2200_17386_6_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -361,7 +249,7 @@
   },
   {
     "table_name": "staff",
-    "constraint_name": "2200_17365_2_not_null",
+    "constraint_name": "2200_17365_1_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -369,7 +257,7 @@
   },
   {
     "table_name": "staff",
-    "constraint_name": "2200_17365_1_not_null",
+    "constraint_name": "2200_17365_2_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -393,14 +281,6 @@
   },
   {
     "table_name": "staff_categories",
-    "constraint_name": "2200_17598_1_not_null",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": null,
-    "foreign_column": null
-  },
-  {
-    "table_name": "staff_categories",
     "constraint_name": "2200_17598_3_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
@@ -410,6 +290,14 @@
   {
     "table_name": "staff_categories",
     "constraint_name": "2200_17598_2_not_null",
+    "constraint_type": "CHECK",
+    "column_name": null,
+    "foreign_table": null,
+    "foreign_column": null
+  },
+  {
+    "table_name": "staff_categories",
+    "constraint_name": "2200_17598_1_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -443,22 +331,6 @@
     "table_name": "staff_categories",
     "constraint_name": "staff_categories_staff_id_category_id_key",
     "constraint_type": "UNIQUE",
-    "column_name": "staff_id",
-    "foreign_table": "staff_categories",
-    "foreign_column": "category_id"
-  },
-  {
-    "table_name": "staff_categories",
-    "constraint_name": "staff_categories_staff_id_category_id_key",
-    "constraint_type": "UNIQUE",
-    "column_name": "category_id",
-    "foreign_table": "staff_categories",
-    "foreign_column": "category_id"
-  },
-  {
-    "table_name": "staff_categories",
-    "constraint_name": "staff_categories_staff_id_category_id_key",
-    "constraint_type": "UNIQUE",
     "column_name": "category_id",
     "foreign_table": "staff_categories",
     "foreign_column": "staff_id"
@@ -469,11 +341,35 @@
     "constraint_type": "UNIQUE",
     "column_name": "staff_id",
     "foreign_table": "staff_categories",
+    "foreign_column": "category_id"
+  },
+  {
+    "table_name": "staff_categories",
+    "constraint_name": "staff_categories_staff_id_category_id_key",
+    "constraint_type": "UNIQUE",
+    "column_name": "staff_id",
+    "foreign_table": "staff_categories",
     "foreign_column": "staff_id"
+  },
+  {
+    "table_name": "staff_categories",
+    "constraint_name": "staff_categories_staff_id_category_id_key",
+    "constraint_type": "UNIQUE",
+    "column_name": "category_id",
+    "foreign_table": "staff_categories",
+    "foreign_column": "category_id"
   },
   {
     "table_name": "staff_schedules",
-    "constraint_name": "2200_17435_2_not_null",
+    "constraint_name": "2200_17435_5_not_null",
+    "constraint_type": "CHECK",
+    "column_name": null,
+    "foreign_table": null,
+    "foreign_column": null
+  },
+  {
+    "table_name": "staff_schedules",
+    "constraint_name": "2200_17435_1_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -489,7 +385,7 @@
   },
   {
     "table_name": "staff_schedules",
-    "constraint_name": "2200_17435_1_not_null",
+    "constraint_name": "2200_17435_2_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -498,14 +394,6 @@
   {
     "table_name": "staff_schedules",
     "constraint_name": "2200_17435_4_not_null",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": null,
-    "foreign_column": null
-  },
-  {
-    "table_name": "staff_schedules",
-    "constraint_name": "2200_17435_5_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -531,7 +419,7 @@
     "table_name": "staff_schedules",
     "constraint_name": "staff_schedules_staff_id_day_of_week_key",
     "constraint_type": "UNIQUE",
-    "column_name": "staff_id",
+    "column_name": "day_of_week",
     "foreign_table": "staff_schedules",
     "foreign_column": "day_of_week"
   },
@@ -547,7 +435,7 @@
     "table_name": "staff_schedules",
     "constraint_name": "staff_schedules_staff_id_day_of_week_key",
     "constraint_type": "UNIQUE",
-    "column_name": "day_of_week",
+    "column_name": "staff_id",
     "foreign_table": "staff_schedules",
     "foreign_column": "day_of_week"
   },
@@ -558,14 +446,6 @@
     "column_name": "day_of_week",
     "foreign_table": "staff_schedules",
     "foreign_column": "staff_id"
-  },
-  {
-    "table_name": "staff_services",
-    "constraint_name": "2200_17405_1_not_null",
-    "constraint_type": "CHECK",
-    "column_name": null,
-    "foreign_table": null,
-    "foreign_column": null
   },
   {
     "table_name": "staff_services",
@@ -585,11 +465,11 @@
   },
   {
     "table_name": "staff_services",
-    "constraint_name": "staff_services_staff_id_fkey",
-    "constraint_type": "FOREIGN KEY",
-    "column_name": "staff_id",
-    "foreign_table": "staff",
-    "foreign_column": "id"
+    "constraint_name": "2200_17405_1_not_null",
+    "constraint_type": "CHECK",
+    "column_name": null,
+    "foreign_table": null,
+    "foreign_column": null
   },
   {
     "table_name": "staff_services",
@@ -597,6 +477,14 @@
     "constraint_type": "FOREIGN KEY",
     "column_name": "service_id",
     "foreign_table": "services",
+    "foreign_column": "id"
+  },
+  {
+    "table_name": "staff_services",
+    "constraint_name": "staff_services_staff_id_fkey",
+    "constraint_type": "FOREIGN KEY",
+    "column_name": "staff_id",
+    "foreign_table": "staff",
     "foreign_column": "id"
   },
   {
@@ -611,7 +499,7 @@
     "table_name": "staff_services",
     "constraint_name": "staff_services_staff_id_service_id_key",
     "constraint_type": "UNIQUE",
-    "column_name": "service_id",
+    "column_name": "staff_id",
     "foreign_table": "staff_services",
     "foreign_column": "staff_id"
   },
@@ -627,7 +515,7 @@
     "table_name": "staff_services",
     "constraint_name": "staff_services_staff_id_service_id_key",
     "constraint_type": "UNIQUE",
-    "column_name": "staff_id",
+    "column_name": "service_id",
     "foreign_table": "staff_services",
     "foreign_column": "staff_id"
   },
@@ -649,7 +537,7 @@
   },
   {
     "table_name": "user_profiles",
-    "constraint_name": "2200_26101_2_not_null",
+    "constraint_name": "2200_26101_1_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,
@@ -657,7 +545,7 @@
   },
   {
     "table_name": "user_profiles",
-    "constraint_name": "2200_26101_1_not_null",
+    "constraint_name": "2200_26101_2_not_null",
     "constraint_type": "CHECK",
     "column_name": null,
     "foreign_table": null,

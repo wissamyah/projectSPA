@@ -177,9 +177,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           console.log('[AUTH] Fetching role for signed in user')
           await fetchUserRole(newSession.user.id, newSession.user.email)
         }
-        // Invalidate queries to refetch with new auth
+        // Only invalidate queries on actual sign in, not token refresh
+        // And only invalidate user-specific queries, not all queries
         if (event === 'SIGNED_IN') {
-          queryClient.invalidateQueries()
+          // Only invalidate user-specific and booking queries that might have changed
+          queryClient.invalidateQueries({ queryKey: ['supabase', 'bookings'] })
+          queryClient.invalidateQueries({ queryKey: ['supabase', 'user'] })
         }
       } else if (event === 'SIGNED_OUT') {
         console.log('[AUTH] User signed out')
@@ -195,8 +198,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (newSession?.user) {
           await fetchUserRole(newSession.user.id, newSession.user.email)
         }
-        // Invalidate user-specific queries
-        queryClient.invalidateQueries()
+        // Only invalidate user-specific queries, not all queries
+        queryClient.invalidateQueries({ queryKey: ['supabase', 'user'] })
       } else {
         console.log('[AUTH] Other auth event:', event)
         setSession(newSession)

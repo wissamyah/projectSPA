@@ -12,8 +12,8 @@ export const queryClient = new QueryClient({
       // Retry failed requests
       retry: 1,
 
-      // Refetch on window focus (good for real-time updates)
-      refetchOnWindowFocus: true,
+      // Disable refetch on window focus to prevent unnecessary refetches when switching tabs
+      refetchOnWindowFocus: false,
 
       // Refetch on reconnect
       refetchOnReconnect: 'always',

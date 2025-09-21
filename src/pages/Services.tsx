@@ -1,27 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Clock, Sparkles, ChevronRight, Flower2, Leaf, Heart, Droplets, Star, Filter, X } from 'lucide-react'
-import { supabase } from '../lib/supabase'
-import { executeQuery, executeBatchQueries } from '../utils/supabaseQuery'
+import { useServicesWithCategories, useCategories } from '../hooks'
 
-interface Service {
-  id: string
-  name: string
-  description: string | null
-  duration: number
-  price: number
-  category_id: string | null
-}
-
-interface Category {
-  id: string
-  name: string
-  display_order: number
-}
-
-interface ServiceWithCategory extends Service {
-  category?: Category
-}
 
 // Category icons mapping
 const categoryIcons: { [key: string]: React.ReactNode } = {
@@ -34,16 +15,15 @@ const categoryIcons: { [key: string]: React.ReactNode } = {
 }
 
 const Services = () => {
-  const [services, setServices] = useState<ServiceWithCategory[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
-  const [loading, setLoading] = useState(true)
+  // Use React Query hooks for proper caching and no loading states on tab switch
+  const { data: services = [], isLoading: servicesLoading } = useServicesWithCategories()
+  const { data: categories = [], isLoading: categoriesLoading } = useCategories()
+
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
 
-  useEffect(() => {
-    fetchServicesAndCategories()
-  }, [])
+  const loading = servicesLoading || categoriesLoading
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,61 +32,6 @@ const Services = () => {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  const fetchServicesAndCategories = async () => {
-    console.log('[Services Page] fetchServicesAndCategories called')
-    setLoading(true)
-
-    try {
-      console.log('[Services Page] Starting to fetch data...')
-
-      // Direct queries for testing
-      const [categoriesResult, servicesResult] = await Promise.all([
-        supabase
-          .from('service_categories')
-          .select('*')
-          .order('display_order'),
-        supabase
-          .from('services')
-          .select(`
-            *,
-            category:service_categories(*)
-          `)
-          .eq('is_active', true)
-          .order('name')
-      ])
-
-      console.log('[Services Page] Queries returned')
-      console.log('[Services Page] Categories:', categoriesResult.data?.length || 0, 'error:', categoriesResult.error)
-      console.log('[Services Page] Services:', servicesResult.data?.length || 0, 'error:', servicesResult.error)
-
-      if (categoriesResult.error || servicesResult.error) {
-        console.error('[Services Page] Errors:', {
-          categories: categoriesResult.error,
-          services: servicesResult.error
-        })
-        // Still set what we have
-        setCategories(categoriesResult.data || [])
-        setServices(servicesResult.data || [])
-        // Retry
-        setTimeout(() => {
-          console.log('[Services Page] Retrying after error...')
-          fetchServicesAndCategories()
-        }, 3000)
-      } else {
-        console.log('[Services Page] Setting state with data')
-        setCategories(categoriesResult.data || [])
-        setServices(servicesResult.data || [])
-      }
-    } catch (error) {
-      console.error('[Services Page] Unexpected error:', error)
-      setCategories([])
-      setServices([])
-    } finally {
-      console.log('[Services Page] Setting loading to false')
-      setLoading(false)
-    }
-  }
 
   // Get filtered services based on selected category
   const getFilteredServices = () => {

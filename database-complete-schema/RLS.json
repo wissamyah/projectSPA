@@ -1,11 +1,47 @@
 [
   {
+    "tablename": "archived_bookings",
+    "policyname": "Admins can delete archived bookings",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "DELETE",
+    "using_expression": "( SELECT is_admin() AS is_admin)",
+    "check_expression": null
+  },
+  {
+    "tablename": "archived_bookings",
+    "policyname": "Admins can insert archived bookings",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "INSERT",
+    "using_expression": null,
+    "check_expression": "( SELECT is_admin() AS is_admin)"
+  },
+  {
+    "tablename": "archived_bookings",
+    "policyname": "Admins can update archived bookings",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "UPDATE",
+    "using_expression": "( SELECT is_admin() AS is_admin)",
+    "check_expression": null
+  },
+  {
+    "tablename": "archived_bookings",
+    "policyname": "View archived bookings",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "SELECT",
+    "using_expression": "(( SELECT is_admin() AS is_admin) OR ( SELECT is_staff() AS is_staff))",
+    "check_expression": null
+  },
+  {
     "tablename": "bookings",
     "policyname": "Admin and staff can delete bookings",
     "permissive": "PERMISSIVE",
     "roles": "{public}",
     "action": "DELETE",
-    "using_expression": "(is_admin() OR is_staff())",
+    "using_expression": "(( SELECT is_admin() AS is_admin) OR ( SELECT is_staff() AS is_staff))",
     "check_expression": null
   },
   {
@@ -15,7 +51,7 @@
     "roles": "{public}",
     "action": "INSERT",
     "using_expression": null,
-    "check_expression": "((auth.uid() = user_id) OR (user_id IS NULL))"
+    "check_expression": "((user_id = ( SELECT auth.uid() AS uid)) OR (user_id IS NULL))"
   },
   {
     "tablename": "bookings",
@@ -23,7 +59,7 @@
     "permissive": "PERMISSIVE",
     "roles": "{public}",
     "action": "UPDATE",
-    "using_expression": "((auth.uid() = user_id) OR is_admin() OR is_staff())",
+    "using_expression": "((user_id = ( SELECT auth.uid() AS uid)) OR ( SELECT is_admin() AS is_admin) OR ( SELECT is_staff() AS is_staff))",
     "check_expression": null
   },
   {
@@ -32,30 +68,39 @@
     "permissive": "PERMISSIVE",
     "roles": "{public}",
     "action": "SELECT",
-    "using_expression": "((auth.uid() = user_id) OR is_admin() OR is_staff())",
-    "check_expression": null
-  },
-  {
-    "tablename": "calendar_sync_logs",
-    "policyname": "Admin can view sync logs",
-    "permissive": "PERMISSIVE",
-    "roles": "{public}",
-    "action": "SELECT",
-    "using_expression": "is_admin()",
+    "using_expression": "((user_id = ( SELECT auth.uid() AS uid)) OR ( SELECT is_admin() AS is_admin) OR ( SELECT is_staff() AS is_staff))",
     "check_expression": null
   },
   {
     "tablename": "service_categories",
-    "policyname": "Admins can manage service categories",
+    "policyname": "Admins can delete service categories",
     "permissive": "PERMISSIVE",
     "roles": "{public}",
-    "action": "ALL",
-    "using_expression": "is_admin()",
+    "action": "DELETE",
+    "using_expression": "( SELECT is_admin() AS is_admin)",
     "check_expression": null
   },
   {
     "tablename": "service_categories",
-    "policyname": "Public can view service categories",
+    "policyname": "Admins can insert service categories",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "INSERT",
+    "using_expression": null,
+    "check_expression": "( SELECT is_admin() AS is_admin)"
+  },
+  {
+    "tablename": "service_categories",
+    "policyname": "Admins can update service categories",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "UPDATE",
+    "using_expression": "( SELECT is_admin() AS is_admin)",
+    "check_expression": null
+  },
+  {
+    "tablename": "service_categories",
+    "policyname": "View service categories",
     "permissive": "PERMISSIVE",
     "roles": "{public}",
     "action": "SELECT",
@@ -68,7 +113,7 @@
     "permissive": "PERMISSIVE",
     "roles": "{public}",
     "action": "DELETE",
-    "using_expression": "is_admin()",
+    "using_expression": "( SELECT is_admin() AS is_admin)",
     "check_expression": null
   },
   {
@@ -78,7 +123,7 @@
     "roles": "{public}",
     "action": "INSERT",
     "using_expression": null,
-    "check_expression": "is_admin()"
+    "check_expression": "( SELECT is_admin() AS is_admin)"
   },
   {
     "tablename": "services",
@@ -86,7 +131,7 @@
     "permissive": "PERMISSIVE",
     "roles": "{public}",
     "action": "UPDATE",
-    "using_expression": "is_admin()",
+    "using_expression": "( SELECT is_admin() AS is_admin)",
     "check_expression": null
   },
   {
@@ -95,7 +140,7 @@
     "permissive": "PERMISSIVE",
     "roles": "{public}",
     "action": "SELECT",
-    "using_expression": "((is_active = true) OR is_admin() OR is_staff())",
+    "using_expression": "((is_active = true) OR ( SELECT is_admin() AS is_admin) OR ( SELECT is_staff() AS is_staff))",
     "check_expression": null
   },
   {
@@ -104,7 +149,7 @@
     "permissive": "PERMISSIVE",
     "roles": "{public}",
     "action": "DELETE",
-    "using_expression": "is_admin()",
+    "using_expression": "( SELECT is_admin() AS is_admin)",
     "check_expression": null
   },
   {
@@ -114,7 +159,7 @@
     "roles": "{public}",
     "action": "INSERT",
     "using_expression": null,
-    "check_expression": "is_admin()"
+    "check_expression": "( SELECT is_admin() AS is_admin)"
   },
   {
     "tablename": "staff",
@@ -122,7 +167,7 @@
     "permissive": "PERMISSIVE",
     "roles": "{public}",
     "action": "UPDATE",
-    "using_expression": "is_admin()",
+    "using_expression": "( SELECT is_admin() AS is_admin)",
     "check_expression": null
   },
   {
@@ -131,80 +176,125 @@
     "permissive": "PERMISSIVE",
     "roles": "{public}",
     "action": "SELECT",
-    "using_expression": "((is_active = true) OR is_admin() OR is_staff())",
+    "using_expression": "((is_active = true) OR ( SELECT is_admin() AS is_admin) OR ( SELECT is_staff() AS is_staff))",
     "check_expression": null
   },
   {
     "tablename": "staff_categories",
-    "policyname": "Admins can manage staff categories",
+    "policyname": "Admins can delete staff categories",
     "permissive": "PERMISSIVE",
     "roles": "{public}",
-    "action": "ALL",
-    "using_expression": "is_admin()",
+    "action": "DELETE",
+    "using_expression": "( SELECT is_admin() AS is_admin)",
     "check_expression": null
   },
   {
     "tablename": "staff_categories",
-    "policyname": "Public can view staff categories",
+    "policyname": "Admins can insert staff categories",
     "permissive": "PERMISSIVE",
     "roles": "{public}",
-    "action": "SELECT",
-    "using_expression": "true",
-    "check_expression": null
+    "action": "INSERT",
+    "using_expression": null,
+    "check_expression": "( SELECT is_admin() AS is_admin)"
   },
   {
-    "tablename": "staff_schedules",
-    "policyname": "Admins and staff can manage staff schedules",
-    "permissive": "PERMISSIVE",
-    "roles": "{public}",
-    "action": "ALL",
-    "using_expression": "(is_admin() OR is_staff())",
-    "check_expression": null
-  },
-  {
-    "tablename": "staff_schedules",
-    "policyname": "Public can view staff schedules",
-    "permissive": "PERMISSIVE",
-    "roles": "{public}",
-    "action": "SELECT",
-    "using_expression": "true",
-    "check_expression": null
-  },
-  {
-    "tablename": "staff_services",
-    "policyname": "Admins can manage staff services",
-    "permissive": "PERMISSIVE",
-    "roles": "{public}",
-    "action": "ALL",
-    "using_expression": "is_admin()",
-    "check_expression": null
-  },
-  {
-    "tablename": "staff_services",
-    "policyname": "Public can view staff services",
-    "permissive": "PERMISSIVE",
-    "roles": "{public}",
-    "action": "SELECT",
-    "using_expression": "true",
-    "check_expression": null
-  },
-  {
-    "tablename": "user_profiles",
-    "policyname": "Admins can read all profiles",
-    "permissive": "PERMISSIVE",
-    "roles": "{public}",
-    "action": "SELECT",
-    "using_expression": "(EXISTS ( SELECT 1\n   FROM user_profiles user_profiles_1\n  WHERE ((user_profiles_1.id = auth.uid()) AND (user_profiles_1.role = 'admin'::text))))",
-    "check_expression": null
-  },
-  {
-    "tablename": "user_profiles",
-    "policyname": "Admins can update all profiles",
+    "tablename": "staff_categories",
+    "policyname": "Admins can update staff categories",
     "permissive": "PERMISSIVE",
     "roles": "{public}",
     "action": "UPDATE",
-    "using_expression": "(EXISTS ( SELECT 1\n   FROM user_profiles user_profiles_1\n  WHERE ((user_profiles_1.id = auth.uid()) AND (user_profiles_1.role = 'admin'::text))))",
-    "check_expression": "true"
+    "using_expression": "( SELECT is_admin() AS is_admin)",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff_categories",
+    "policyname": "View staff categories",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "SELECT",
+    "using_expression": "true",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff_schedules",
+    "policyname": "Admins and staff can delete staff schedules",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "DELETE",
+    "using_expression": "(( SELECT is_admin() AS is_admin) OR ( SELECT is_staff() AS is_staff))",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff_schedules",
+    "policyname": "Admins and staff can insert staff schedules",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "INSERT",
+    "using_expression": null,
+    "check_expression": "(( SELECT is_admin() AS is_admin) OR ( SELECT is_staff() AS is_staff))"
+  },
+  {
+    "tablename": "staff_schedules",
+    "policyname": "Admins and staff can update staff schedules",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "UPDATE",
+    "using_expression": "(( SELECT is_admin() AS is_admin) OR ( SELECT is_staff() AS is_staff))",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff_schedules",
+    "policyname": "View staff schedules",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "SELECT",
+    "using_expression": "true",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff_services",
+    "policyname": "Admins can delete staff services",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "DELETE",
+    "using_expression": "( SELECT is_admin() AS is_admin)",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff_services",
+    "policyname": "Admins can insert staff services",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "INSERT",
+    "using_expression": null,
+    "check_expression": "( SELECT is_admin() AS is_admin)"
+  },
+  {
+    "tablename": "staff_services",
+    "policyname": "Admins can update staff services",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "UPDATE",
+    "using_expression": "( SELECT is_admin() AS is_admin)",
+    "check_expression": null
+  },
+  {
+    "tablename": "staff_services",
+    "policyname": "View staff services",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "SELECT",
+    "using_expression": "true",
+    "check_expression": null
+  },
+  {
+    "tablename": "user_profiles",
+    "policyname": "Update user profiles",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "action": "UPDATE",
+    "using_expression": "((id = ( SELECT auth.uid() AS uid)) OR (EXISTS ( SELECT 1\n   FROM user_profiles admin_check\n  WHERE ((admin_check.id = ( SELECT auth.uid() AS uid)) AND (admin_check.role = 'admin'::text)))))",
+    "check_expression": "\nCASE\n    WHEN (EXISTS ( SELECT 1\n       FROM user_profiles admin_check\n      WHERE ((admin_check.id = ( SELECT auth.uid() AS uid)) AND (admin_check.role = 'admin'::text)))) THEN true\n    ELSE ((id = ( SELECT auth.uid() AS uid)) AND (role = ( SELECT up.role\n       FROM user_profiles up\n      WHERE (up.id = ( SELECT auth.uid() AS uid)))))\nEND"
   },
   {
     "tablename": "user_profiles",
@@ -213,24 +303,15 @@
     "roles": "{public}",
     "action": "INSERT",
     "using_expression": null,
-    "check_expression": "(auth.uid() = id)"
+    "check_expression": "(id = ( SELECT auth.uid() AS uid))"
   },
   {
     "tablename": "user_profiles",
-    "policyname": "Users can read own profile",
+    "policyname": "View user profiles",
     "permissive": "PERMISSIVE",
     "roles": "{public}",
     "action": "SELECT",
-    "using_expression": "(auth.uid() = id)",
+    "using_expression": "((id = ( SELECT auth.uid() AS uid)) OR (EXISTS ( SELECT 1\n   FROM user_profiles admin_check\n  WHERE ((admin_check.id = ( SELECT auth.uid() AS uid)) AND (admin_check.role = 'admin'::text)))))",
     "check_expression": null
-  },
-  {
-    "tablename": "user_profiles",
-    "policyname": "Users can update own profile",
-    "permissive": "PERMISSIVE",
-    "roles": "{public}",
-    "action": "UPDATE",
-    "using_expression": "(auth.uid() = id)",
-    "check_expression": "((auth.uid() = id) AND (role = ( SELECT user_profiles_1.role\n   FROM user_profiles user_profiles_1\n  WHERE (user_profiles_1.id = auth.uid()))))"
   }
 ]

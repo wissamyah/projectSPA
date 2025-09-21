@@ -1,12 +1,19 @@
 // Services
 export {
   useServices,
+  useServicesWithCategories,
   useServicesWithStaff,
   useService,
   useCreateService,
   useUpdateService,
   useDeleteService
 } from './useServices'
+
+// Categories
+export {
+  useCategories,
+  useCategory
+} from './useCategories'
 
 // Staff
 export {

@@ -15,6 +15,16 @@
     "indexdef": "CREATE INDEX idx_archived_bookings_date ON public.archived_bookings USING btree (booking_date DESC)"
   },
   {
+    "tablename": "archived_bookings",
+    "indexname": "idx_archived_bookings_service_uuid",
+    "indexdef": "CREATE INDEX idx_archived_bookings_service_uuid ON public.archived_bookings USING btree (service_uuid)"
+  },
+  {
+    "tablename": "archived_bookings",
+    "indexname": "idx_archived_bookings_staff_id",
+    "indexdef": "CREATE INDEX idx_archived_bookings_staff_id ON public.archived_bookings USING btree (staff_id)"
+  },
+  {
     "tablename": "bookings",
     "indexname": "bookings_pkey",
     "indexdef": "CREATE UNIQUE INDEX bookings_pkey ON public.bookings USING btree (id)"
@@ -23,16 +33,6 @@
     "tablename": "bookings",
     "indexname": "idx_bookings_booking_date",
     "indexdef": "CREATE INDEX idx_bookings_booking_date ON public.bookings USING btree (booking_date)"
-  },
-  {
-    "tablename": "bookings",
-    "indexname": "idx_bookings_google_calendar_synced",
-    "indexdef": "CREATE INDEX idx_bookings_google_calendar_synced ON public.bookings USING btree (google_calendar_synced)"
-  },
-  {
-    "tablename": "bookings",
-    "indexname": "idx_bookings_google_event_id",
-    "indexdef": "CREATE INDEX idx_bookings_google_event_id ON public.bookings USING btree (google_event_id)"
   },
   {
     "tablename": "bookings",
@@ -53,21 +53,6 @@
     "tablename": "bookings",
     "indexname": "idx_bookings_user_id",
     "indexdef": "CREATE INDEX idx_bookings_user_id ON public.bookings USING btree (user_id)"
-  },
-  {
-    "tablename": "calendar_sync_logs",
-    "indexname": "calendar_sync_logs_pkey",
-    "indexdef": "CREATE UNIQUE INDEX calendar_sync_logs_pkey ON public.calendar_sync_logs USING btree (id)"
-  },
-  {
-    "tablename": "calendar_sync_queue",
-    "indexname": "calendar_sync_queue_pkey",
-    "indexdef": "CREATE UNIQUE INDEX calendar_sync_queue_pkey ON public.calendar_sync_queue USING btree (id)"
-  },
-  {
-    "tablename": "calendar_sync_queue",
-    "indexname": "idx_sync_queue_status",
-    "indexdef": "CREATE INDEX idx_sync_queue_status ON public.calendar_sync_queue USING btree (status, created_at)"
   },
   {
     "tablename": "service_categories",
