@@ -313,8 +313,9 @@ const Dashboard = () => {
 
         {/* Bookings List */}
         <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50">
-          <div className="p-8 border-b border-sage-100">
-            <div className="flex items-center justify-between">
+          <div className="p-6 lg:p-8 border-b border-sage-100">
+            {/* Desktop Layout */}
+            <div className="hidden lg:flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-light text-stone-800 flex items-center">
                   <Flower2 className="h-6 w-6 mr-3 text-gold-500" />
@@ -328,6 +329,24 @@ const Dashboard = () => {
               >
                 <span className="font-light">Book New</span>
                 <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+
+            {/* Mobile Layout */}
+            <div className="lg:hidden space-y-4">
+              <div>
+                <h2 className="text-xl font-medium text-stone-800 flex items-center">
+                  <Flower2 className="h-5 w-5 mr-2 text-gold-500" />
+                  Your Wellness Journey
+                </h2>
+                <p className="text-xs text-stone-600 mt-1">View and manage your spa appointments</p>
+              </div>
+              <button
+                onClick={() => navigate('/book')}
+                className="w-full bg-gradient-to-r from-sage-600 to-sage-700 text-white px-4 py-3 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2"
+              >
+                <span className="font-medium">Book New Appointment</span>
+                <ChevronRight className="h-4 w-4" />
               </button>
             </div>
           </div>

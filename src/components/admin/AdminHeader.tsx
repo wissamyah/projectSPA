@@ -31,8 +31,9 @@ export const AdminHeader = ({
 
   return (
     <div className="-mt-16 relative z-10">
-      <div className="flex justify-between items-start mb-8">
-        <div className="flex gap-3">
+      {/* Desktop Navigation - Centered Pills */}
+      <div className="hidden lg:flex justify-center mb-8">
+        <div className="flex flex-wrap justify-center gap-3">
           {totalPendingCount > 0 && (
             <div className="relative">
               <button
@@ -96,6 +97,78 @@ export const AdminHeader = ({
         </div>
       </div>
 
+      {/* Mobile Navigation - Scrollable Horizontal with Gradient Fade */}
+      <div className="lg:hidden mb-8">
+        {totalPendingCount > 0 && (
+          <div className="mb-3 px-4">
+            <button
+              onClick={handlePendingButtonClick}
+              className={`w-full bg-gradient-to-r from-gold-500 to-amber-500 text-white px-4 py-3 rounded-xl hover:shadow-lg flex items-center justify-center space-x-2 shadow-lg transition-all ${
+                hasNewPending ? 'flash-pending-button' : 'animate-pulse'
+              }`}
+            >
+              <Bell className="h-5 w-5" />
+              <span className="font-medium">Pending ({totalPendingCount})</span>
+              {totalPendingCount !== stats.pending && (
+                <span className="text-xs bg-white/30 px-2 py-0.5 rounded-full ml-2">
+                  {stats.pending} today
+                </span>
+              )}
+            </button>
+          </div>
+        )}
+
+        <div className="relative">
+          {/* Scrollable container */}
+          <div className="overflow-x-auto scrollbar-hide px-4">
+            <div className="flex gap-2 pb-2">
+              <Link
+                to="/admin/schedule"
+                className="flex-shrink-0 bg-white/95 backdrop-blur-sm text-spa-700 px-4 py-2.5 rounded-xl hover:shadow-lg flex items-center space-x-2 shadow-md transition-all border border-spa-200"
+              >
+                <CalendarDays className="h-4 w-4" />
+                <span className="font-medium text-sm whitespace-nowrap">Schedule</span>
+              </Link>
+              <Link
+                to="/admin/services"
+                className="flex-shrink-0 bg-white/95 backdrop-blur-sm text-sage-700 px-4 py-2.5 rounded-xl hover:shadow-lg flex items-center space-x-2 shadow-md transition-all border border-sage-200"
+              >
+                <Package className="h-4 w-4" />
+                <span className="font-medium text-sm whitespace-nowrap">Services</span>
+              </Link>
+              <Link
+                to="/admin/staff"
+                className="flex-shrink-0 bg-white/95 backdrop-blur-sm text-stone-700 px-4 py-2.5 rounded-xl hover:shadow-lg flex items-center space-x-2 shadow-md transition-all border border-stone-200"
+              >
+                <Users className="h-4 w-4" />
+                <span className="font-medium text-sm whitespace-nowrap">Staff</span>
+              </Link>
+              <Link
+                to="/admin/categories"
+                className="flex-shrink-0 bg-white/95 backdrop-blur-sm text-rose-700 px-4 py-2.5 rounded-xl hover:shadow-lg flex items-center space-x-2 shadow-md transition-all border border-rose-200"
+              >
+                <Tag className="h-4 w-4" />
+                <span className="font-medium text-sm whitespace-nowrap">Categories</span>
+              </Link>
+              <Link
+                to="/admin/archive"
+                className="flex-shrink-0 bg-white/95 backdrop-blur-sm text-stone-600 px-4 py-2.5 rounded-xl hover:shadow-lg flex items-center space-x-2 shadow-md transition-all border border-stone-200"
+              >
+                <Archive className="h-4 w-4" />
+                <span className="font-medium text-sm whitespace-nowrap">Archive</span>
+              </Link>
+              <Link
+                to="/admin/settings"
+                className="flex-shrink-0 bg-gradient-to-r from-sage-600 to-sage-700 text-white px-4 py-2.5 rounded-xl hover:shadow-lg flex items-center space-x-2 shadow-md transition-all"
+              >
+                <Settings className="h-4 w-4" />
+                <span className="font-medium text-sm whitespace-nowrap">Settings</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Stats Cards with Glass Effect */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-4 hover:shadow-2xl transition-all group">
@@ -155,8 +228,8 @@ export const AdminHeader = ({
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex items-center justify-between mb-6">
+      {/* Action Buttons - Desktop */}
+      <div className="hidden lg:flex items-center justify-between mb-6">
         <div className="flex gap-3">
           <button
             onClick={handleArchiveOld}
@@ -184,7 +257,7 @@ export const AdminHeader = ({
             }`}
           >
             <Grid3X3 className="h-4 w-4" />
-            <span className="hidden sm:inline">Calendar</span>
+            <span>Calendar</span>
           </button>
           <button
             onClick={() => setViewMode('list')}
@@ -195,7 +268,54 @@ export const AdminHeader = ({
             }`}
           >
             <List className="h-4 w-4" />
-            <span className="hidden sm:inline">List</span>
+            <span>List</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Action Buttons - Mobile */}
+      <div className="lg:hidden space-y-3 mb-6 px-4">
+        {/* View Mode Toggle */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-md border border-sage-200 p-1 flex">
+          <button
+            onClick={() => setViewMode('calendar')}
+            className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
+              viewMode === 'calendar'
+                ? 'bg-gradient-to-r from-sage-600 to-sage-700 text-white shadow-sm'
+                : 'text-stone-600'
+            }`}
+          >
+            <Grid3X3 className="h-4 w-4" />
+            <span>Calendar</span>
+          </button>
+          <button
+            onClick={() => setViewMode('list')}
+            className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
+              viewMode === 'list'
+                ? 'bg-gradient-to-r from-sage-600 to-sage-700 text-white shadow-sm'
+                : 'text-stone-600'
+            }`}
+          >
+            <List className="h-4 w-4" />
+            <span>List</span>
+          </button>
+        </div>
+
+        {/* Action Buttons Row */}
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            onClick={handleArchiveOld}
+            className="bg-white/95 backdrop-blur-sm text-stone-700 px-4 py-2.5 rounded-xl hover:shadow-lg flex items-center justify-center gap-2 transition-all border border-stone-200 font-medium text-sm"
+          >
+            <Archive className="h-4 w-4" />
+            Archive
+          </button>
+          <button
+            onClick={handleMarkCompleted}
+            className="bg-white/95 backdrop-blur-sm text-sage-700 px-4 py-2.5 rounded-xl hover:shadow-lg flex items-center justify-center gap-2 transition-all border border-sage-200 font-medium text-sm"
+          >
+            <Sparkles className="h-4 w-4" />
+            Complete
           </button>
         </div>
       </div>

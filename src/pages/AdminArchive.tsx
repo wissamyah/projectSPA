@@ -200,31 +200,48 @@ const AdminArchive = () => {
       </section>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Action Bar */}
-        <div className="mb-6 flex justify-between items-start">
-          <div className="flex gap-3">
-            <button
-              onClick={fetchArchivedBookings}
-              className="bg-white/95 backdrop-blur-sm text-stone-700 px-4 py-2.5 rounded-full hover:bg-white hover:shadow-md flex items-center gap-2 border border-stone-200 transition-all"
-            >
-              <RefreshCw className="h-4 w-4" />
-              <span className="font-light">Refresh</span>
-            </button>
-            <button
-              onClick={exportToCSV}
-              className="bg-white/95 backdrop-blur-sm text-stone-700 px-4 py-2.5 rounded-full hover:bg-white hover:shadow-md flex items-center gap-2 border border-stone-200 transition-all"
-            >
-              <Download className="h-4 w-4" />
-              <span className="font-light">Export CSV</span>
-            </button>
-          </div>
-          <Link
-            to="/admin"
-            className="bg-gradient-to-r from-sage-600 to-sage-700 text-white px-5 py-2.5 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
+        {/* Back Navigation */}
+        <div className="mb-6">
+          <Link to="/admin" className="inline-flex items-center text-stone-600 hover:text-sage-700 transition-colors">
+            <ArrowLeft className="h-6 w-6 mr-2" />
             <span className="font-light">Back to Dashboard</span>
           </Link>
+        </div>
+
+        {/* Action Buttons - Desktop */}
+        <div className="hidden lg:flex gap-3 mb-6">
+          <button
+            onClick={fetchArchivedBookings}
+            className="bg-white/95 backdrop-blur-sm text-stone-700 px-4 py-2.5 rounded-full hover:bg-white hover:shadow-md flex items-center gap-2 border border-stone-200 transition-all"
+          >
+            <RefreshCw className="h-4 w-4" />
+            <span className="font-light">Refresh</span>
+          </button>
+          <button
+            onClick={exportToCSV}
+            className="bg-white/95 backdrop-blur-sm text-stone-700 px-4 py-2.5 rounded-full hover:bg-white hover:shadow-md flex items-center gap-2 border border-stone-200 transition-all"
+          >
+            <Download className="h-4 w-4" />
+            <span className="font-light">Export CSV</span>
+          </button>
+        </div>
+
+        {/* Action Buttons - Mobile */}
+        <div className="lg:hidden grid grid-cols-2 gap-2 mb-6">
+          <button
+            onClick={fetchArchivedBookings}
+            className="bg-white/95 backdrop-blur-sm text-stone-700 px-4 py-2.5 rounded-xl hover:bg-white hover:shadow-md flex items-center justify-center gap-2 border border-stone-200 transition-all"
+          >
+            <RefreshCw className="h-4 w-4" />
+            <span className="font-medium text-sm">Refresh</span>
+          </button>
+          <button
+            onClick={exportToCSV}
+            className="bg-white/95 backdrop-blur-sm text-stone-700 px-4 py-2.5 rounded-xl hover:bg-white hover:shadow-md flex items-center justify-center gap-2 border border-stone-200 transition-all"
+          >
+            <Download className="h-4 w-4" />
+            <span className="font-medium text-sm">Export</span>
+          </button>
         </div>
 
         {/* Stats Cards */}
@@ -278,8 +295,8 @@ const AdminArchive = () => {
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6 mb-6">
+        {/* Filters - Desktop */}
+        <div className="hidden lg:block bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-6 mb-6">
           <div className="flex flex-wrap gap-4 items-center">
             <div className="flex-1 min-w-[300px]">
               <div className="relative">
@@ -315,6 +332,44 @@ const AdminArchive = () => {
                 <option value="pending">Pending</option>
               </select>
             </div>
+          </div>
+        </div>
+
+        {/* Filters - Mobile */}
+        <div className="lg:hidden space-y-3 mb-6">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-md border border-white/50 p-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-sage-400" />
+              <input
+                type="text"
+                placeholder="Search archives..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 border border-stone-300 rounded-lg text-sm focus:ring-2 focus:ring-sage-500 focus:border-sage-500 transition-all"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="relative">
+              <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-sage-400" />
+              <input
+                type="date"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+                className="w-full pl-9 pr-2 py-2.5 border border-stone-300 rounded-lg text-sm focus:ring-2 focus:ring-sage-500 focus:border-sage-500 transition-all"
+              />
+            </div>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full px-3 py-2.5 border border-stone-300 rounded-lg text-sm focus:ring-2 focus:ring-sage-500 focus:border-sage-500 transition-all"
+            >
+              <option value="all">All Status</option>
+              <option value="completed">Completed</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="pending">Pending</option>
+            </select>
           </div>
         </div>
 

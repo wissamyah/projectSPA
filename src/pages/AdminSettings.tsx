@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Clock, Save, RotateCcw, AlertTriangle, Mail, Send, Sparkles, Settings, Calendar, ChevronRight, Shield, Bell, CheckCircle } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Clock, Save, RotateCcw, AlertTriangle, Mail, Send, Sparkles, Settings, Calendar, ChevronRight, Shield, Bell, CheckCircle, ArrowLeft } from 'lucide-react'
 import {
   getBusinessHours,
   saveBusinessHours,
@@ -173,55 +174,103 @@ const AdminSettings = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cream-50 via-white to-sage-50">
-      {/* Hero Section with Gradient */}
-      <div className="relative bg-gradient-to-r from-sage-600 to-spa-600 text-white">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative container mx-auto px-4 py-12">
-          <div className="flex items-center space-x-4 mb-4">
-            <div className="p-3 bg-white/20 backdrop-blur-sm rounded-full">
-              <Settings className="h-8 w-8" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-light">Admin Settings</h1>
-              <p className="text-sage-100 mt-1">Manage your spa business configurations</p>
-            </div>
+      {/* Hero Section */}
+      <section className="relative pt-40 pb-20 bg-gradient-to-r from-sage-50 via-spa-50 to-rose-50">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-10 left-10 w-64 h-64 bg-sage-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+          <div className="absolute bottom-10 right-10 w-64 h-64 bg-rose-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-spa-100 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+        </div>
+
+        <div className="relative container mx-auto px-4 text-center">
+          <div className="inline-flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-gold-300 mb-6">
+            <Settings className="h-4 w-4 text-gold-500 mr-2" />
+            <span className="text-sm font-medium text-stone-700">Configuration Center</span>
           </div>
 
-          {/* Tab Navigation */}
-          <div className="flex space-x-1 mt-8">
+          <h1 className="text-5xl md:text-6xl font-light text-stone-800 mb-6">
+            Admin
+            <span className="block text-4xl md:text-5xl font-normal text-transparent bg-clip-text bg-gradient-to-r from-sage-600 to-spa-600 mt-2">
+              Settings
+            </span>
+          </h1>
+
+          <p className="text-xl text-stone-600 max-w-3xl mx-auto leading-relaxed">
+            Manage your spa business configurations and operational preferences
+          </p>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Back Navigation */}
+          <div className="mb-6">
+            <Link to="/admin" className="inline-flex items-center text-stone-600 hover:text-sage-700 transition-colors">
+              <ArrowLeft className="h-6 w-6 mr-2" />
+              <span className="font-light">Back to Dashboard</span>
+            </Link>
+          </div>
+
+          {/* Tab Navigation - Desktop */}
+          <div className="hidden lg:flex gap-2 mb-8">
             <button
               onClick={() => setActiveTab('hours')}
-              className={`px-6 py-3 rounded-t-xl transition-all duration-300 ${
+              className={`px-6 py-3 rounded-xl transition-all duration-300 ${
                 activeTab === 'hours'
-                  ? 'bg-white text-sage-700 shadow-lg transform -translate-y-1'
-                  : 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm'
+                  ? 'bg-gradient-to-r from-sage-600 to-sage-700 text-white shadow-lg'
+                  : 'bg-white text-stone-700 hover:bg-stone-50 border border-stone-200'
               }`}
             >
               <div className="flex items-center space-x-2">
                 <Clock className="h-5 w-5" />
-                <span>Business Hours</span>
+                <span className="font-light">Business Hours</span>
               </div>
             </button>
             <button
               onClick={() => setActiveTab('notifications')}
-              className={`px-6 py-3 rounded-t-xl transition-all duration-300 ${
+              className={`px-6 py-3 rounded-xl transition-all duration-300 ${
                 activeTab === 'notifications'
-                  ? 'bg-white text-sage-700 shadow-lg transform -translate-y-1'
-                  : 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm'
+                  ? 'bg-gradient-to-r from-sage-600 to-sage-700 text-white shadow-lg'
+                  : 'bg-white text-stone-700 hover:bg-stone-50 border border-stone-200'
               }`}
             >
               <div className="flex items-center space-x-2">
                 <Bell className="h-5 w-5" />
-                <span>Notifications</span>
+                <span className="font-light">Notifications</span>
               </div>
             </button>
           </div>
-        </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 -mt-4">
-        <div className="max-w-4xl mx-auto">
+          {/* Tab Navigation - Mobile */}
+          <div className="lg:hidden grid grid-cols-2 gap-2 mb-8">
+            <button
+              onClick={() => setActiveTab('hours')}
+              className={`px-4 py-3 rounded-xl transition-all duration-300 ${
+                activeTab === 'hours'
+                  ? 'bg-gradient-to-r from-sage-600 to-sage-700 text-white shadow-lg'
+                  : 'bg-white text-stone-700 hover:bg-stone-50 border border-stone-200'
+              }`}
+            >
+              <div className="flex items-center justify-center space-x-2">
+                <Clock className="h-5 w-5" />
+                <span className="font-medium text-sm">Business Hours</span>
+              </div>
+            </button>
+            <button
+              onClick={() => setActiveTab('notifications')}
+              className={`px-4 py-3 rounded-xl transition-all duration-300 ${
+                activeTab === 'notifications'
+                  ? 'bg-gradient-to-r from-sage-600 to-sage-700 text-white shadow-lg'
+                  : 'bg-white text-stone-700 hover:bg-stone-50 border border-stone-200'
+              }`}
+            >
+              <div className="flex items-center justify-center space-x-2">
+                <Bell className="h-5 w-5" />
+                <span className="font-medium text-sm">Notifications</span>
+              </div>
+            </button>
+          </div>
           {activeTab === 'hours' ? (
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden animate-fadeIn">
               <div className="p-8">
@@ -506,18 +555,6 @@ const AdminSettings = () => {
                     </div>
                   </div>
 
-                  {/* Configuration Note */}
-                  <div className="bg-gradient-to-r from-yellow-50 to-gold-50 border border-yellow-200 rounded-xl p-4">
-                    <div className="flex items-start">
-                      <AlertTriangle className="h-5 w-5 text-yellow-600 mr-3 mt-0.5" />
-                      <div>
-                        <p className="text-sm text-yellow-800 font-medium mb-1">Configuration Required</p>
-                        <p className="text-xs text-yellow-700">
-                          Email functionality requires RESEND_API_KEY configuration in your Supabase Edge Function environment.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>

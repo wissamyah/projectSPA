@@ -237,13 +237,17 @@ const AdminServices = () => {
       </section>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-6 flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <Link to="/admin" className="text-stone-600 hover:text-sage-700 transition-colors">
-              <ArrowLeft className="h-6 w-6" />
-            </Link>
-          </div>
-          {!showAddForm && (
+        {/* Back Navigation */}
+        <div className="mb-6">
+          <Link to="/admin" className="inline-flex items-center text-stone-600 hover:text-sage-700 transition-colors">
+            <ArrowLeft className="h-6 w-6 mr-2" />
+            <span className="font-light">Back to Dashboard</span>
+          </Link>
+        </div>
+
+        {/* Action Button */}
+        {!showAddForm && (
+          <div className="mb-6">
             <button
               onClick={() => setShowAddForm(true)}
               className="bg-gradient-to-r from-sage-600 to-sage-700 text-white px-6 py-2.5 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center space-x-2"
@@ -251,8 +255,8 @@ const AdminServices = () => {
               <Plus className="h-4 w-4" />
               <span className="font-light">Add Service</span>
             </button>
-          )}
-        </div>
+          </div>
+        )}
 
         {showAddForm && (
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">

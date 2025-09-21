@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { RefreshCw, Printer } from 'lucide-react'
+import { RefreshCw, Printer, ArrowLeft } from 'lucide-react'
 
 // Import types
 import { Booking, Staff } from '../types/schedule'
@@ -141,8 +141,16 @@ const AdminSchedule = () => {
       />
 
       <div className="container mx-auto px-4 py-8 print:px-0 print:py-0">
-        {/* Action Buttons */}
-        <div className="flex gap-3 mb-6 print:hidden">
+        {/* Back Navigation */}
+        <div className="mb-6 print:hidden">
+          <Link to="/admin" className="inline-flex items-center text-stone-600 hover:text-sage-700 transition-colors">
+            <ArrowLeft className="h-6 w-6 mr-2" />
+            <span className="font-light">Back to Dashboard</span>
+          </Link>
+        </div>
+
+        {/* Action Buttons - Desktop */}
+        <div className="hidden lg:flex gap-3 mb-6 print:hidden">
           <button
             onClick={fetchData}
             className="bg-white/95 backdrop-blur-sm text-stone-700 px-4 py-2.5 rounded-full hover:bg-white hover:shadow-md flex items-center gap-2 border border-stone-200 transition-all"
@@ -157,12 +165,24 @@ const AdminSchedule = () => {
             <Printer className="h-4 w-4" />
             <span className="font-light">Print</span>
           </button>
-          <Link
-            to="/admin"
-            className="bg-gradient-to-r from-sage-600 to-sage-700 text-white px-5 py-2.5 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2"
+        </div>
+
+        {/* Action Buttons - Mobile */}
+        <div className="lg:hidden grid grid-cols-2 gap-2 mb-6 print:hidden">
+          <button
+            onClick={fetchData}
+            className="bg-white/95 backdrop-blur-sm text-stone-700 px-4 py-2.5 rounded-xl hover:bg-white hover:shadow-md flex items-center justify-center gap-2 border border-stone-200 transition-all"
           >
-            <span className="font-light">Back to Dashboard</span>
-          </Link>
+            <RefreshCw className="h-4 w-4" />
+            <span className="font-medium text-sm">Refresh</span>
+          </button>
+          <button
+            onClick={handlePrint}
+            className="bg-white/95 backdrop-blur-sm text-stone-700 px-4 py-2.5 rounded-xl hover:bg-white hover:shadow-md flex items-center justify-center gap-2 border border-stone-200 transition-all"
+          >
+            <Printer className="h-4 w-4" />
+            <span className="font-medium text-sm">Print</span>
+          </button>
         </div>
 
         {/* Controls Section */}
