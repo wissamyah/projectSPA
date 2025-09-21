@@ -52,6 +52,14 @@ const Dashboard = () => {
 
   // Data is now fetched via React Query hooks
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    const day = date.getDate().toString().padStart(2, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const year = date.getFullYear()
+    return `${day}/${month}/${year}`
+  }
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'confirmed':
@@ -345,7 +353,7 @@ const Dashboard = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center text-sm text-stone-600">
                           <Calendar className="h-4 w-4 mr-2 text-sage-600" />
-                          {new Date(booking.booking_date).toLocaleDateString()}
+                          {formatDate(booking.booking_date)}
                           <Clock className="h-4 w-4 mx-2 text-spa-600" />
                           {typeof booking.booking_time === 'string' ? booking.booking_time.substring(0, 5) : booking.booking_time}
                         </div>
@@ -427,7 +435,7 @@ const Dashboard = () => {
                   </p>
                   <p className="text-sm text-stone-600 mt-2 flex items-center">
                     <Calendar className="h-3 w-3 mr-2" />
-                    {new Date(selectedBooking.booking_date).toLocaleDateString()} at {selectedBooking.booking_time.substring(0, 5)}
+                    {formatDate(selectedBooking.booking_date)} at {selectedBooking.booking_time.substring(0, 5)}
                   </p>
                 </div>
               </div>

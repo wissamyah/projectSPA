@@ -117,8 +117,7 @@ export const sendBookingReceived = async (data: EmailData) => {
                     <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.time}</p>
                   </td>
                 </tr>
-                ${data.staffName ? `
-                <tr>
+                ${data.staffName ? `<tr>
                   <td style="padding: 12px 0; vertical-align: top;">
                     <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Preferred Therapist</span>
                     <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.staffName}</p>
@@ -220,8 +219,7 @@ export const sendBookingConfirmation = async (data: EmailData) => {
                     <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.time}</p>
                   </td>
                 </tr>
-                ${data.staffName ? `
-                <tr>
+                ${data.staffName ? `<tr>
                   <td style="padding: 12px 0; vertical-align: top;">
                     <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Your Therapist</span>
                     <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.staffName}</p>
@@ -331,8 +329,7 @@ export const sendBookingReminder = async (data: EmailData) => {
                     <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
                   </td>
                 </tr>
-                ${data.staffName ? `
-                <tr>
+                ${data.staffName ? `<tr>
                   <td style="padding: 10px 0; vertical-align: top;">
                     <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Your Therapist</span>
                     <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.staffName}</p>
@@ -449,8 +446,7 @@ export const sendRescheduleNotification = async (data: EmailData & {
                   <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0; font-weight: 500;">${data.serviceName}</p>
                 </td>
               </tr>
-              ${data.staffName ? `
-              <tr>
+              ${data.staffName ? `<tr>
                 <td style="padding: 10px 0; vertical-align: top; border-bottom: 1px solid #e7e5e4;">
                   <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Your Therapist</span>
                   <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.staffName}</p>
@@ -563,8 +559,7 @@ export const sendCancellationNotification = async (data: EmailData & { reason?: 
                     <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.time}</p>
                   </td>
                 </tr>
-                ${data.reason ? `
-                <tr>
+                ${data.reason ? `<tr>
                   <td style="padding: 10px 0; vertical-align: top;">
                     <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Reason</span>
                     <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.reason}</p>
