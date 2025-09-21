@@ -197,35 +197,37 @@ const StaffSchedule = () => {
           <div className="absolute top-0 left-10 w-32 h-32 bg-sage-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
           <div className="absolute bottom-0 right-10 w-32 h-32 bg-rose-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
         </div>
-        <div className="relative container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-white/80 backdrop-blur-sm rounded-xl">
-                <Flower2 className="h-6 w-6 text-sage-600" />
+        <div className="relative container mx-auto px-4 py-4 md:py-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-center gap-3 md:gap-4">
+              <div className="p-2.5 md:p-3 bg-white/80 backdrop-blur-sm rounded-xl flex-shrink-0">
+                <Flower2 className="h-5 w-5 md:h-6 md:w-6 text-sage-600" />
               </div>
               <div>
-                <h1 className="text-2xl font-light text-stone-800">
-                  <span className="font-normal">{staff.name}</span>'s Schedule
+                <h1 className="text-xl md:text-2xl font-light text-stone-800">
+                  <span className="font-normal">{staff.name}</span>
+                  <span className="hidden sm:inline">'s Schedule</span>
                 </h1>
-                <p className="text-sm text-stone-600">Weekly Appointment View</p>
+                <p className="text-xs md:text-sm text-stone-600">Weekly Appointment View</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
               <button
                 onClick={fetchData}
-                className="p-2.5 bg-white/80 hover:bg-white rounded-xl transition-all shadow-sm"
+                className="p-2 md:p-2.5 bg-white/80 hover:bg-white rounded-xl transition-all shadow-sm"
                 title="Refresh"
               >
-                <RefreshCw className="h-5 w-5 text-sage-600" />
+                <RefreshCw className="h-4 w-4 md:h-5 md:w-5 text-sage-600" />
               </button>
-              <label className="flex items-center gap-2 text-sm text-stone-600 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-xl">
+              <label className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm text-stone-600 bg-white/80 backdrop-blur-sm px-3 md:px-4 py-1.5 md:py-2 rounded-xl">
                 <input
                   type="checkbox"
                   checked={autoRefresh}
                   onChange={(e) => setAutoRefresh(e.target.checked)}
-                  className="rounded text-sage-600 focus:ring-sage-500"
+                  className="h-3 w-3 md:h-4 md:w-4 rounded text-sage-600 focus:ring-sage-500"
                 />
-                Auto-refresh
+                <span className="hidden sm:inline">Auto-refresh</span>
+                <span className="sm:hidden">Auto</span>
               </label>
             </div>
           </div>
