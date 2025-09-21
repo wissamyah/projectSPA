@@ -159,7 +159,7 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden relative z-50 p-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300"
+            className="md:hidden relative z-[110] p-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300"
           >
             {isMenuOpen ? (
               <X className="h-6 w-6 text-stone-700" />
@@ -171,19 +171,19 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu Overlay */}
-      <div className={`fixed inset-0 z-40 md:hidden transition-all duration-500 ${
+      <div className={`fixed inset-0 z-[100] md:hidden transition-all duration-500 ${
         isMenuOpen ? 'visible' : 'invisible'
       }`}>
         {/* Backdrop */}
         <div
-          className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-500 ${
+          className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-500 ${
             isMenuOpen ? 'opacity-100' : 'opacity-0'
           }`}
           onClick={() => setIsMenuOpen(false)}
         />
 
         {/* Slide-in Menu */}
-        <div className={`absolute right-0 top-0 h-full w-full max-w-sm bg-white shadow-2xl transform transition-transform duration-500 ease-out ${
+        <div className={`fixed right-0 top-0 h-screen w-full max-w-sm bg-white shadow-2xl transform transition-transform duration-500 ease-out overflow-y-auto ${
           isMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}>
           {/* Menu Header */}
