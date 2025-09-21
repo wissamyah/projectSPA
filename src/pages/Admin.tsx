@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { CheckCircle, XCircle, AlertCircle, Crown } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { executeQuery } from '../utils/supabaseQuery'
 import { getBusinessHours, generateTimeSlots } from '../utils/businessHours'
 import { sendRescheduleNotification, sendBookingConfirmation, sendCancellationNotification } from '../services/emailService'
 import { markPastBookingsCompleted, archiveOldBookings } from '../utils/bookingArchive'
@@ -184,20 +185,34 @@ const Admin = () => {
   const fetchBookings = async () => {
     setLoading(true)
     try {
-      const { data, error } = await supabase
-        .from('bookings')
-        .select(`
-          *,
-          service:services(name, duration, price),
-          staff:staff(name, email)
-        `)
-        .eq('booking_date', selectedDate)
-        .order('booking_time', { ascending: true })
+      console.log('[Admin] Fetching bookings for date:', selectedDate)
 
-      if (error) throw error
-      setBookings(data || [])
+      const result = await executeQuery(() =>
+        supabase
+          .from('bookings')
+          .select(`
+            *,
+            service:services(name, duration, price),
+            staff:staff(name, email)
+          `)
+          .eq('booking_date', selectedDate)
+          .order('booking_time', { ascending: true })
+      )
+
+      if (result.data) {
+        setBookings(result.data || [])
+        console.log('[Admin] Bookings loaded successfully')
+      } else if (result.error) {
+        console.error('[Admin] Error fetching bookings:', result.error)
+        await showAlert('Failed to load bookings. Retrying...', 'error')
+        // Retry after a delay
+        setTimeout(() => {
+          console.log('[Admin] Retrying fetch...')
+          fetchBookings()
+        }, 3000)
+      }
     } catch (error) {
-      console.error('Error fetching bookings:', error)
+      console.error('[Admin] Unexpected error:', error)
       await showAlert('Failed to load bookings', 'error')
     } finally {
       setLoading(false)

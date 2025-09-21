@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
 import { queryKeys, staleTimes } from '../lib/queryClient'
+import { handleAuthError, authRetryConfig } from '../utils/authErrorHandler'
 
 interface Booking {
   id: string
@@ -20,21 +21,21 @@ export function useBookingsByDate(date: string) {
   return useQuery({
     queryKey: queryKeys.bookingsByDate(date),
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('bookings')
-        .select(`
-          *,
-          service:service_uuid(name, duration, price),
-          staff:staff_id(name, email)
-        `)
-        .eq('booking_date', date)
-        .order('booking_time')
-
-      if (error) throw error
-      return data
+      return handleAuthError(async () => {
+        return await supabase
+          .from('bookings')
+          .select(`
+            *,
+            service:service_uuid(name, duration, price),
+            staff:staff_id(name, email)
+          `)
+          .eq('booking_date', date)
+          .order('booking_time')
+      })
     },
     staleTime: staleTimes.dynamic, // 30 seconds
     refetchInterval: 60000, // Refetch every minute for real-time updates
+    ...authRetryConfig
   })
 }
 
@@ -67,22 +68,22 @@ export function usePendingBookings() {
   return useQuery({
     queryKey: queryKeys.bookingsPending(),
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('bookings')
-        .select(`
-          *,
-          service:services(name, duration, price),
-          staff:staff(name, email)
-        `)
-        .eq('status', 'pending')
-        .order('booking_date')
-        .order('booking_time')
-
-      if (error) throw error
-      return data
+      return handleAuthError(async () => {
+        return await supabase
+          .from('bookings')
+          .select(`
+            *,
+            service:services(name, duration, price),
+            staff:staff(name, email)
+          `)
+          .eq('status', 'pending')
+          .order('booking_date')
+          .order('booking_time')
+      })
     },
     staleTime: staleTimes.dynamic,
     refetchInterval: 30000, // Refetch every 30 seconds for admin dashboard
+    ...authRetryConfig
   })
 }
 

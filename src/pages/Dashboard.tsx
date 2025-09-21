@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Calendar, Clock, CheckCircle, XCircle, AlertCircle, Edit2, X, RefreshCw, Sparkles, Heart, Flower2, User, BookOpen, ChevronRight, Star } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { executeQuery, executeBatchQueries } from '../utils/supabaseQuery'
 import { useNavigate } from 'react-router-dom'
 import { sendCancellationNotification } from '../services/emailService'
 import { useModal } from '../contexts/ModalContext'
@@ -50,21 +51,34 @@ const Dashboard = () => {
   const fetchUserAndBookings = async () => {
     try {
       if (user) {
-        const { data, error } = await supabase
-          .from('bookings')
-          .select(`
-            *,
-            service:service_uuid(id, name),
-            staff:staff_id(id, name)
-          `)
-          .eq('user_id', user.id)
-          .order('booking_date', { ascending: false })
+        console.log('[Dashboard] Fetching user bookings...')
 
-        if (error) throw error
-        setBookings(data || [])
+        const result = await executeQuery(() =>
+          supabase
+            .from('bookings')
+            .select(`
+              *,
+              service:service_uuid(id, name),
+              staff:staff_id(id, name)
+            `)
+            .eq('user_id', user.id)
+            .order('booking_date', { ascending: false })
+        )
+
+        if (result.data) {
+          setBookings(result.data || [])
+          console.log('[Dashboard] Bookings loaded successfully')
+        } else if (result.error) {
+          console.error('[Dashboard] Error fetching bookings:', result.error)
+          // Retry after a delay
+          setTimeout(() => {
+            console.log('[Dashboard] Retrying fetch...')
+            fetchUserAndBookings()
+          }, 3000)
+        }
       }
     } catch (error) {
-      console.error('Error fetching bookings:', error)
+      console.error('[Dashboard] Unexpected error:', error)
     } finally {
       setLoading(false)
     }
@@ -72,20 +86,27 @@ const Dashboard = () => {
 
   const fetchServices = async () => {
     try {
-      const { data, error } = await supabase
-        .from('services')
-        .select('id, name')
+      console.log('[Dashboard] Fetching services...')
 
-      if (error) throw error
-      
-      // Create a map for quick lookup
-      const serviceMap: { [key: string]: string } = {}
-      data?.forEach(service => {
-        serviceMap[service.id] = service.name
-      })
-      setServices(serviceMap)
+      const result = await executeQuery(() =>
+        supabase
+          .from('services')
+          .select('id, name')
+      )
+
+      if (result.data) {
+        // Create a map for quick lookup
+        const serviceMap: { [key: string]: string } = {}
+        result.data?.forEach(service => {
+          serviceMap[service.id] = service.name
+        })
+        setServices(serviceMap)
+        console.log('[Dashboard] Services loaded successfully')
+      } else if (result.error) {
+        console.error('[Dashboard] Error fetching services:', result.error)
+      }
     } catch (error) {
-      console.error('Error fetching services:', error)
+      console.error('[Dashboard] Unexpected error fetching services:', error)
     }
   }
 

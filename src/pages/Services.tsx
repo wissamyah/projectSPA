@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Clock, Sparkles, ChevronRight, Flower2, Leaf, Heart, Droplets, Star, Filter, X } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { executeQuery, executeBatchQueries } from '../utils/supabaseQuery'
 
 interface Service {
   id: string
@@ -53,32 +54,56 @@ const Services = () => {
   }, [])
 
   const fetchServicesAndCategories = async () => {
+    console.log('[Services Page] fetchServicesAndCategories called')
     setLoading(true)
+
     try {
-      // Fetch categories
-      const { data: categoriesData, error: categoriesError } = await supabase
-        .from('service_categories')
-        .select('*')
-        .order('display_order')
+      console.log('[Services Page] Starting to fetch data...')
 
-      if (categoriesError) throw categoriesError
-      setCategories(categoriesData || [])
+      // Direct queries for testing
+      const [categoriesResult, servicesResult] = await Promise.all([
+        supabase
+          .from('service_categories')
+          .select('*')
+          .order('display_order'),
+        supabase
+          .from('services')
+          .select(`
+            *,
+            category:service_categories(*)
+          `)
+          .eq('is_active', true)
+          .order('name')
+      ])
 
-      // Fetch services with categories
-      const { data: servicesData, error: servicesError } = await supabase
-        .from('services')
-        .select(`
-          *,
-          category:service_categories(*)
-        `)
-        .eq('is_active', true)
-        .order('name')
+      console.log('[Services Page] Queries returned')
+      console.log('[Services Page] Categories:', categoriesResult.data?.length || 0, 'error:', categoriesResult.error)
+      console.log('[Services Page] Services:', servicesResult.data?.length || 0, 'error:', servicesResult.error)
 
-      if (servicesError) throw servicesError
-      setServices(servicesData || [])
+      if (categoriesResult.error || servicesResult.error) {
+        console.error('[Services Page] Errors:', {
+          categories: categoriesResult.error,
+          services: servicesResult.error
+        })
+        // Still set what we have
+        setCategories(categoriesResult.data || [])
+        setServices(servicesResult.data || [])
+        // Retry
+        setTimeout(() => {
+          console.log('[Services Page] Retrying after error...')
+          fetchServicesAndCategories()
+        }, 3000)
+      } else {
+        console.log('[Services Page] Setting state with data')
+        setCategories(categoriesResult.data || [])
+        setServices(servicesResult.data || [])
+      }
     } catch (error) {
-      console.error('Error fetching services:', error)
+      console.error('[Services Page] Unexpected error:', error)
+      setCategories([])
+      setServices([])
     } finally {
+      console.log('[Services Page] Setting loading to false')
       setLoading(false)
     }
   }

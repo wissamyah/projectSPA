@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Calendar, Clock, Star, Users, ChevronRight, Sparkles, Flower2, Heart, Leaf, Droplets } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { executeQuery } from '../utils/supabaseQuery'
 
 interface Service {
   id: string
@@ -19,8 +20,12 @@ const Landing = () => {
   }, [])
 
   const fetchPopularServices = async () => {
+    console.log('[Landing] fetchPopularServices called')
+
     try {
-      // Fetch first 4 active services as popular services
+      console.log('[Landing] Starting to fetch popular services...')
+
+      // Direct query for testing
       const { data, error } = await supabase
         .from('services')
         .select('id, name, duration, price')
@@ -28,11 +33,28 @@ const Landing = () => {
         .limit(4)
         .order('name')
 
-      if (error) throw error
-      setPopularServices(data || [])
+      console.log('[Landing] Query returned, data:', data?.length || 0, 'services, error:', error)
+
+      if (error) {
+        console.error('[Landing] Error fetching services:', error)
+        setPopularServices([])
+        // Retry after a delay
+        setTimeout(() => {
+          console.log('[Landing] Retrying fetch...')
+          fetchPopularServices()
+        }, 3000)
+      } else if (data) {
+        console.log('[Landing] Setting', data.length, 'popular services')
+        setPopularServices(data)
+      } else {
+        console.log('[Landing] No data and no error, setting empty services')
+        setPopularServices([])
+      }
     } catch (error) {
-      console.error('Error fetching services:', error)
+      console.error('[Landing] Unexpected error in fetchPopularServices:', error)
+      setPopularServices([])
     } finally {
+      console.log('[Landing] Setting loading to false')
       setLoading(false)
     }
   }

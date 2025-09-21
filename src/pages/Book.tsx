@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { Calendar, Clock, User, Mail, Phone, FileText, AlertCircle, CheckCircle, Ban, Moon, Sparkles, ChevronRight, Flower2, Heart, Check, ArrowLeft, ArrowRight } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { executeQuery } from '../utils/supabaseQuery'
 import {
   getBusinessHours,
   generateTimeSlots,
@@ -114,54 +115,60 @@ const Book = () => {
   }, [formData.booking_date, formData.service_id, formData.booking_time])
 
   const fetchAvailableServices = async () => {
+    console.log('[Book Page] fetchAvailableServices called')
     setLoadingServices(true)
+
     try {
-      const { data: servicesWithStaff, error } = await supabase
+      console.log('[Book Page] Starting to fetch services...')
+
+      // Direct query without executeQuery wrapper to test
+      const { data, error } = await supabase
         .from('services')
-        .select(`
-          id,
-          name,
-          description,
-          duration,
-          price,
-          category_id,
-          is_active,
-          staff_services!inner(
-            staff_id,
-            staff:staff!inner(
-              id,
-              name,
-              is_active
-            )
-          )
-        `)
+        .select('*')
         .eq('is_active', true)
         .order('name')
 
-      if (error) throw error
+      console.log('[Book Page] Query returned, data:', data?.length || 0, 'services, error:', error)
 
-      const availableServices = servicesWithStaff?.filter(service =>
-        service.staff_services?.some((ss: any) => ss.staff?.is_active)
-      ) || []
+      if (error) {
+        console.error('[Book Page] Error fetching services:', error)
+        // Still set empty array to stop loading
+        setServices([])
+        // Retry after a delay
+        setTimeout(() => {
+          console.log('[Book Page] Retrying fetch...')
+          fetchAvailableServices()
+        }, 3000)
+      } else if (data) {
+        console.log('[Book Page] Processing', data.length, 'services')
 
-      const mappedServices = availableServices.map(s => ({
-        id: s.id,
-        name: s.name,
-        description: s.description,
-        duration: s.duration,
-        price: Number(s.price),
-        category_id: s.category_id,
-        is_active: s.is_active
-      }))
+        // Map services to our interface
+        const mappedServices = data.map(s => ({
+          id: s.id,
+          name: s.name,
+          description: s.description,
+          duration: s.duration,
+          price: Number(s.price),
+          category_id: s.category_id,
+          is_active: s.is_active
+        }))
 
-      setServices(mappedServices)
+        console.log('[Book Page] Setting services state with', mappedServices.length, 'services')
+        setServices(mappedServices)
 
-      if (serviceId && !mappedServices.find(s => s.id === serviceId)) {
-        setFormData(prev => ({ ...prev, service_id: '' }))
+        if (serviceId && !mappedServices.find(s => s.id === serviceId)) {
+          console.log('[Book Page] Pre-selected service not found, clearing selection')
+          setFormData(prev => ({ ...prev, service_id: '' }))
+        }
+      } else {
+        console.log('[Book Page] No data and no error, setting empty services')
+        setServices([])
       }
     } catch (error) {
-      console.error('Error fetching services:', error)
+      console.error('[Book Page] Unexpected error in fetchAvailableServices:', error)
+      setServices([]) // Set empty to stop loading
     } finally {
+      console.log('[Book Page] Setting loading to false')
       setLoadingServices(false)
     }
   }

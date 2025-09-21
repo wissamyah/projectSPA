@@ -137,3 +137,82 @@ Complete Database Structure Export Commands
   npx supabase functions list
   npx supabase functions describe send-email
   npx supabase functions download send-email
+
+--------------------------------------------------------------------
+  Setup Flow
+
+  1. Create Your First User Account
+
+  1. Go to http://localhost:5173/setup
+  2. Create an account with your desired admin email
+  3. Confirm your email (check inbox)
+
+  2. Make That User an Admin
+
+  Run this SQL in Supabase SQL editor:
+  -- Replace with your actual email
+  SELECT setup_initial_admin('your-email@example.com');
+
+  3. Secure the Function (Important!)
+
+  After creating your first admin, run:
+  -- Revoke public access to prevent unauthorized admin creation
+  REVOKE EXECUTE ON FUNCTION public.setup_initial_admin FROM anon, authenticated;
+
+  -- Optional: Drop the function entirely
+  DROP FUNCTION IF EXISTS public.setup_initial_admin(TEXT);
+
+  4. Test Your Admin Access
+
+  1. Sign in at http://localhost:5173/auth
+  2. You should see the Admin link in the navbar
+  3. Access admin dashboard at http://localhost:5173/admin
+
+  Summary of Changes Made
+
+  ✅ Deleted Files:
+  - src/pages/AdminPromotion.tsx
+  - ADMIN_ACCESS_INSTRUCTIONS.md
+
+  ✅ Updated Files:
+  - src/App.tsx - Removed AdminPromotion route
+  - src/pages/Setup.tsx - Simplified to create regular users only
+  - src/contexts/AuthContext.tsx - Removed promote_to_admin RPC
+  - src/utils/adminAuth.ts - Removed localStorage fallbacks
+  - src/pages/DebugAuth.tsx - Removed promote-admin button
+
+  ✅ New Admin System:
+  - Clean, secure one-time setup function
+  - No hardcoded secrets
+  - Function can be revoked after use
+  - Direct database approach
+
+  The system is now much more secure with no secret keys in the codebase!
+
+
+  However, note that the function currently has a check that prevents creating admins if one already exists:
+
+  -- Check if any admins exist
+  SELECT COUNT(*) INTO existing_admins
+  FROM user_profiles
+  WHERE role = 'admin';
+
+  IF existing_admins > 0 THEN
+    RETURN json_build_object(
+      'success', false,
+      'message', 'Admin already exists'
+    );
+  END IF;
+
+  So if you want to create multiple admins, you'd need to either:
+  1. Remove that check from the function, OR
+  2. Use a direct UPDATE query instead: UPDATE user_profiles SET role = 'admin' WHERE id = (SELECT id FROM auth.users WHERE email = 'another-email@example.com');
+
+  The function remains available until you explicitly revoke or drop it, so you can use it as many times as needed before securing it.
+
+----------------------------------------------------------------------------------------
+localStorage.clear();
+sessionStorage.clear();
+document.cookie.split(";").forEach(c => {
+  document.cookie = c.trim().split("=")[0] + "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
+});
