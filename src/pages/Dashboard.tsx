@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Calendar, Clock, CheckCircle, XCircle, AlertCircle, Edit2, X, RefreshCw, Sparkles, Heart, Flower2, User, BookOpen, ChevronRight, Star } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { executeQuery, executeBatchQueries } from '../utils/supabaseQuery'
 import { useNavigate } from 'react-router-dom'
 import { sendCancellationNotification } from '../services/emailService'
 import { useModal } from '../contexts/ModalContext'
 import { useAuth } from '../contexts/AuthContext'
 import Tooltip from '../components/Tooltip'
+import { useUserBookings } from '../hooks/useUserBookings'
+import { useServices } from '../hooks'
 
 interface Service {
   id: string
@@ -29,86 +30,27 @@ interface Booking {
 }
 
 const Dashboard = () => {
-  const [bookings, setBookings] = useState<Booking[]>([])
   const { user } = useAuth()
-  const [loading, setLoading] = useState(true)
-  const [services, setServices] = useState<{ [key: string]: string }>({}) // For fallback
-  const [showCancelModal, setShowCancelModal] = useState(false)
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
-  const [cancellationReason, setCancellationReason] = useState('')
   const navigate = useNavigate()
   const { showAlert } = useModal()
 
-  useEffect(() => {
-    if (user) {
-      fetchUserAndBookings()
-      fetchServices()
-    } else {
-      setLoading(false)
-    }
-  }, [user])
+  // Use React Query hooks for data fetching
+  const { data: bookings = [], isLoading: bookingsLoading } = useUserBookings(user?.id)
+  const { data: servicesData = [], isLoading: servicesLoading } = useServices()
 
-  const fetchUserAndBookings = async () => {
-    try {
-      if (user) {
-        console.log('[Dashboard] Fetching user bookings...')
+  const [showCancelModal, setShowCancelModal] = useState(false)
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
+  const [cancellationReason, setCancellationReason] = useState('')
 
-        const result = await executeQuery(() =>
-          supabase
-            .from('bookings')
-            .select(`
-              *,
-              service:service_uuid(id, name),
-              staff:staff_id(id, name)
-            `)
-            .eq('user_id', user.id)
-            .order('booking_date', { ascending: false })
-        )
+  // Create services map for quick lookup
+  const services = servicesData.reduce((acc, service) => {
+    acc[service.id] = service.name
+    return acc
+  }, {} as { [key: string]: string })
 
-        if (result.data) {
-          setBookings(result.data || [])
-          console.log('[Dashboard] Bookings loaded successfully')
-        } else if (result.error) {
-          console.error('[Dashboard] Error fetching bookings:', result.error)
-          // Retry after a delay
-          setTimeout(() => {
-            console.log('[Dashboard] Retrying fetch...')
-            fetchUserAndBookings()
-          }, 3000)
-        }
-      }
-    } catch (error) {
-      console.error('[Dashboard] Unexpected error:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const loading = bookingsLoading || servicesLoading
 
-  const fetchServices = async () => {
-    try {
-      console.log('[Dashboard] Fetching services...')
-
-      const result = await executeQuery(() =>
-        supabase
-          .from('services')
-          .select('id, name')
-      )
-
-      if (result.data) {
-        // Create a map for quick lookup
-        const serviceMap: { [key: string]: string } = {}
-        result.data?.forEach(service => {
-          serviceMap[service.id] = service.name
-        })
-        setServices(serviceMap)
-        console.log('[Dashboard] Services loaded successfully')
-      } else if (result.error) {
-        console.error('[Dashboard] Error fetching services:', result.error)
-      }
-    } catch (error) {
-      console.error('[Dashboard] Unexpected error fetching services:', error)
-    }
-  }
+  // Data is now fetched via React Query hooks
 
   const getStatusIcon = (status: string) => {
     switch (status) {

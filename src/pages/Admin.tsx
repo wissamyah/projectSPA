@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { CheckCircle, XCircle, AlertCircle, Crown } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { executeQuery } from '../utils/supabaseQuery'
 import { getBusinessHours, generateTimeSlots } from '../utils/businessHours'
 import { sendRescheduleNotification, sendBookingConfirmation, sendCancellationNotification } from '../services/emailService'
 import { markPastBookingsCompleted, archiveOldBookings } from '../utils/bookingArchive'
 import { useModal } from '../contexts/ModalContext'
+import { useBookingsByDate, usePendingBookings } from '../hooks'
+import { useServices, useStaff } from '../hooks'
+import { useQueryClient } from '@tanstack/react-query'
 
 // Import components
 import { AdminHeader } from '../components/admin/AdminHeader'
@@ -22,14 +24,19 @@ interface Service {
 
 const Admin = () => {
   const { showAlert, showConfirm } = useModal()
-  const [bookings, setBookings] = useState<any[]>([])
-  const [services, setServices] = useState<Service[]>([])
-  const [staffMembers, setStaffMembers] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+  const queryClient = useQueryClient()
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar')
   const [selectedBooking, setSelectedBooking] = useState<any>(null)
   const [displayTimeSlots, setDisplayTimeSlots] = useState<string[]>([])
+
+  // Use React Query hooks
+  const { data: bookings = [], isLoading: bookingsLoading, refetch: refetchBookings } = useBookingsByDate(selectedDate)
+  const { data: pendingBookings = [] } = usePendingBookings()
+  const { data: services = [] } = useServices()
+  const { data: staffMembers = [] } = useStaff()
+
+  const loading = bookingsLoading
 
   // Reschedule modal state
   const [showRescheduleModal, setShowRescheduleModal] = useState(false)
@@ -40,7 +47,7 @@ const Admin = () => {
   const [rescheduleReason, setRescheduleReason] = useState('')
 
   // Real-time pending bookings state
-  const [totalPendingCount, setTotalPendingCount] = useState(0)
+  const totalPendingCount = pendingBookings.length
   const [hasNewPending, setHasNewPending] = useState(false)
 
 
@@ -49,10 +56,6 @@ const Admin = () => {
   const standardTimeSlots = generateTimeSlots(businessHours)
 
   useEffect(() => {
-    fetchServices()
-    fetchStaffMembers()
-    fetchTotalPendingCount()
-
     // Set up real-time subscription for new bookings
     const channel = supabase
       .channel('bookings-changes')
@@ -66,14 +69,14 @@ const Admin = () => {
         async (payload) => {
           console.log('Booking change detected:', payload)
 
-          // Fetch updated bookings for current date
+          // Invalidate queries to refetch data
           if (payload.new?.booking_date === selectedDate ||
               payload.old?.booking_date === selectedDate) {
-            fetchBookings()
+            queryClient.invalidateQueries({ queryKey: ['supabase', 'bookings', 'date', selectedDate] })
           }
 
-          // Update total pending count
-          fetchTotalPendingCount()
+          // Invalidate pending bookings
+          queryClient.invalidateQueries({ queryKey: ['supabase', 'bookings', 'pending'] })
 
           // Flash animation for new pending bookings
           if (payload.eventType === 'INSERT' && payload.new?.status === 'pending') {
@@ -87,11 +90,7 @@ const Admin = () => {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [])
-
-  useEffect(() => {
-    fetchBookings()
-  }, [selectedDate])
+  }, [selectedDate, queryClient])
 
   useEffect(() => {
     // Combine standard time slots with any booking times that fall outside business hours
@@ -103,47 +102,7 @@ const Admin = () => {
     setDisplayTimeSlots(allSlots)
   }, [bookings, standardTimeSlots.join(',')])
 
-  const fetchServices = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('services')
-        .select('id, name, duration, price')
-        .eq('is_active', true)
-
-      if (error) throw error
-      setServices(data || [])
-    } catch (error) {
-      console.error('Error fetching services:', error)
-    }
-  }
-
-  const fetchStaffMembers = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('staff')
-        .select('id, name, email')
-        .eq('is_active', true)
-
-      if (error) throw error
-      setStaffMembers(data || [])
-    } catch (error) {
-      console.error('Error fetching staff members:', error)
-    }
-  }
-
-  const fetchTotalPendingCount = async () => {
-    try {
-      const { count, error } = await supabase
-        .from('bookings')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'pending')
-
-      if (error) throw error
-      setTotalPendingCount(count || 0)
-    } catch (error) {
-      console.error('Error fetching total pending count:', error)
-    }
-  }
+  // Data is now fetched via React Query hooks
 
   const handlePendingButtonClick = async () => {
     // Fetch the earliest pending booking date
@@ -182,42 +141,7 @@ const Admin = () => {
     return service
   }
 
-  const fetchBookings = async () => {
-    setLoading(true)
-    try {
-      console.log('[Admin] Fetching bookings for date:', selectedDate)
-
-      const result = await executeQuery(() =>
-        supabase
-          .from('bookings')
-          .select(`
-            *,
-            service:services(name, duration, price),
-            staff:staff(name, email)
-          `)
-          .eq('booking_date', selectedDate)
-          .order('booking_time', { ascending: true })
-      )
-
-      if (result.data) {
-        setBookings(result.data || [])
-        console.log('[Admin] Bookings loaded successfully')
-      } else if (result.error) {
-        console.error('[Admin] Error fetching bookings:', result.error)
-        await showAlert('Failed to load bookings. Retrying...', 'error')
-        // Retry after a delay
-        setTimeout(() => {
-          console.log('[Admin] Retrying fetch...')
-          fetchBookings()
-        }, 3000)
-      }
-    } catch (error) {
-      console.error('[Admin] Unexpected error:', error)
-      await showAlert('Failed to load bookings', 'error')
-    } finally {
-      setLoading(false)
-    }
-  }
+  // Bookings are now fetched via React Query hook
 
   const updateBookingStatus = async (bookingId: string, status: string) => {
     try {
@@ -234,12 +158,8 @@ const Admin = () => {
 
       if (error) throw error
 
-      setBookings(prev =>
-        prev.map(b => b.id === bookingId ? { ...b, status } : b)
-      )
-
-      // Refresh total pending count to check if we should hide the button
-      await fetchTotalPendingCount()
+      // Invalidate queries to refetch updated data
+      queryClient.invalidateQueries({ queryKey: ['supabase', 'bookings'] })
 
       // Send confirmation email if status is changed to confirmed
       if (status === 'confirmed') {
@@ -281,7 +201,7 @@ const Admin = () => {
       }
 
       // After any status update, refresh the bookings to ensure we have the latest data
-      await fetchBookings()
+      await refetchBookings()
     } catch (error) {
       console.error('Error updating booking status:', error)
       await showAlert('Failed to update booking status', 'error')
@@ -391,7 +311,7 @@ const Admin = () => {
       setRescheduleDate('')
       setRescheduleTime('')
       setRescheduleReason('')
-      fetchBookings()
+      refetchBookings()
     } catch (error) {
       console.error('Error rescheduling appointment:', error)
       await showAlert('Failed to reschedule appointment', 'error')
@@ -474,7 +394,7 @@ const Admin = () => {
     const result = await archiveOldBookings(30)
     if (result.success) {
       await showAlert(`Archived ${result.count} old bookings`, 'success')
-      fetchBookings()
+      refetchBookings()
     }
   }
 
@@ -482,7 +402,7 @@ const Admin = () => {
     const result = await markPastBookingsCompleted()
     if (result.success && result.count > 0) {
       await showAlert(`Marked ${result.count} past bookings as completed`, 'success')
-      fetchBookings()
+      refetchBookings()
     } else {
       await showAlert('No past bookings to mark as completed', 'info')
     }

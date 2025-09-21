@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { Calendar, Clock, User, Mail, Phone, FileText, AlertCircle, CheckCircle, Ban, Moon, Sparkles, ChevronRight, Flower2, Heart, Check, ArrowLeft, ArrowRight } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { executeQuery } from '../utils/supabaseQuery'
+import { useServices } from '../hooks'
 import {
   getBusinessHours,
   generateTimeSlots,
@@ -57,10 +57,11 @@ const Book = () => {
   const [bookedSlots, setBookedSlots] = useState<string[]>([])
   const [allStaffForService, setAllStaffForService] = useState<Staff[]>([])
   const [checkingAvailability, setCheckingAvailability] = useState(false)
-  const [services, setServices] = useState<Service[]>([])
   const [availableStaff, setAvailableStaff] = useState<Staff[]>([])
   const [selectedStaffId, setSelectedStaffId] = useState<string>('')
-  const [loadingServices, setLoadingServices] = useState(true)
+
+  // Use React Query hook for services
+  const { data: services = [], isLoading: loadingServices } = useServices()
 
   // Get dynamic time slots based on business hours
   const businessHours = getBusinessHours()
@@ -74,7 +75,6 @@ const Book = () => {
   ]
 
   useEffect(() => {
-    fetchAvailableServices()
 
     // Set user data when available
     if (user) {
@@ -114,64 +114,13 @@ const Book = () => {
     }
   }, [formData.booking_date, formData.service_id, formData.booking_time])
 
-  const fetchAvailableServices = async () => {
-    console.log('[Book Page] fetchAvailableServices called')
-    setLoadingServices(true)
-
-    try {
-      console.log('[Book Page] Starting to fetch services...')
-
-      // Direct query without executeQuery wrapper to test
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('is_active', true)
-        .order('name')
-
-      console.log('[Book Page] Query returned, data:', data?.length || 0, 'services, error:', error)
-
-      if (error) {
-        console.error('[Book Page] Error fetching services:', error)
-        // Still set empty array to stop loading
-        setServices([])
-        // Retry after a delay
-        setTimeout(() => {
-          console.log('[Book Page] Retrying fetch...')
-          fetchAvailableServices()
-        }, 3000)
-      } else if (data) {
-        console.log('[Book Page] Processing', data.length, 'services')
-
-        // Map services to our interface
-        const mappedServices = data.map(s => ({
-          id: s.id,
-          name: s.name,
-          description: s.description,
-          duration: s.duration,
-          price: Number(s.price),
-          category_id: s.category_id,
-          is_active: s.is_active
-        }))
-
-        console.log('[Book Page] Setting services state with', mappedServices.length, 'services')
-        setServices(mappedServices)
-
-        if (serviceId && !mappedServices.find(s => s.id === serviceId)) {
-          console.log('[Book Page] Pre-selected service not found, clearing selection')
-          setFormData(prev => ({ ...prev, service_id: '' }))
-        }
-      } else {
-        console.log('[Book Page] No data and no error, setting empty services')
-        setServices([])
-      }
-    } catch (error) {
-      console.error('[Book Page] Unexpected error in fetchAvailableServices:', error)
-      setServices([]) // Set empty to stop loading
-    } finally {
-      console.log('[Book Page] Setting loading to false')
-      setLoadingServices(false)
+  // Check pre-selected service validity
+  useEffect(() => {
+    if (serviceId && services.length > 0 && !services.find(s => s.id === serviceId)) {
+      console.log('[Book Page] Pre-selected service not found, clearing selection')
+      setFormData(prev => ({ ...prev, service_id: '' }))
     }
-  }
+  }, [serviceId, services])
 
   const fetchAvailableStaff = async () => {
     if (!formData.service_id || !formData.booking_date || !formData.booking_time) return
