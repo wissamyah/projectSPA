@@ -58,58 +58,106 @@ const sendEmail = async (to: string, subject: string, html: string) => {
 
 export const sendBookingReceived = async (data: EmailData) => {
   const html = `
-    <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <div style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-        <h1 style="color: white; margin: 0; font-size: 28px;">Booking Request Received 📋</h1>
-      </div>
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', serif; background-color: #faf9f8;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+        <!-- Header with elegant gradient -->
+        <div style="background: linear-gradient(135deg, #8a9f77 0%, #5c9e9e 50%, #ceaca1 100%); padding: 40px 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0 0 10px 0; font-size: 32px; font-weight: 300; letter-spacing: 2px;">Serenity Spa</h1>
+          <div style="width: 60px; height: 1px; background-color: #ffffff; margin: 0 auto 15px auto;"></div>
+          <p style="color: #ffffff; margin: 0; font-size: 18px; font-weight: 300; letter-spacing: 1px;">Booking Request Received</p>
+        </div>
 
-      <div style="background: #f7f7f7; padding: 30px; border-radius: 0 0 10px 10px;">
-        <p style="font-size: 16px; color: #333; margin-bottom: 20px;">Dear ${data.customerName},</p>
-
-        <p style="font-size: 16px; color: #333; margin-bottom: 25px;">
-          Thank you for your booking request! We've received your appointment details and our team will confirm your booking shortly.
-        </p>
-
-        <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-          <p style="margin: 0; color: #92400e; font-size: 14px;">
-            <strong>⏳ Status:</strong> Pending Confirmation
+        <!-- Content Section -->
+        <div style="padding: 40px 30px; background-color: #ffffff;">
+          <p style="font-size: 16px; color: #44403c; margin-bottom: 25px; line-height: 1.6;">
+            Dear ${data.customerName},
           </p>
-          <p style="margin: 10px 0 0 0; color: #92400e; font-size: 14px;">
-            You'll receive a confirmation email once our staff verifies availability.
+
+          <p style="font-size: 15px; color: #57534e; margin-bottom: 30px; line-height: 1.8;">
+            Thank you for choosing Serenity Spa. We've received your appointment request and our wellness team is reviewing availability. You'll receive a confirmation shortly.
+          </p>
+
+          <!-- Status Card -->
+          <div style="background: linear-gradient(135deg, #fffef7 0%, #f6f7f5 100%); border-left: 3px solid #dda15e; padding: 20px; margin-bottom: 30px; border-radius: 0 8px 8px 0;">
+            <p style="margin: 0 0 8px 0; color: #6f452b; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+              Status: Pending Confirmation
+            </p>
+            <p style="margin: 0; color: #875432; font-size: 14px; line-height: 1.6;">
+              Our team will verify availability and send confirmation within 1-2 hours.
+            </p>
+          </div>
+
+          <!-- Appointment Details Card -->
+          <div style="background-color: #faf9f8; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+            <h2 style="color: #708360; font-size: 20px; margin: 0 0 20px 0; font-weight: 400; letter-spacing: 1px;">Appointment Details</h2>
+
+            <div style="border-top: 1px solid #e7e5e4; padding-top: 20px;">
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 12px 0; vertical-align: top;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Service</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0; font-weight: 500;">${data.serviceName}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 0; vertical-align: top;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Date</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 0; vertical-align: top;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Time</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.time}</p>
+                  </td>
+                </tr>
+                ${data.staffName ? `
+                <tr>
+                  <td style="padding: 12px 0; vertical-align: top;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Preferred Therapist</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.staffName}</p>
+                  </td>
+                </tr>` : ''}
+              </table>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div style="text-align: center; margin: 35px 0;">
+            <div style="display: inline-block; width: 40px; height: 1px; background-color: #d6d3d1; margin: 0 10px;"></div>
+            <span style="color: #ceaca1; font-size: 20px;">✦</span>
+            <div style="display: inline-block; width: 40px; height: 1px; background-color: #d6d3d1; margin: 0 10px;"></div>
+          </div>
+
+          <!-- Contact Info -->
+          <div style="text-align: center; margin-top: 30px;">
+            <p style="color: #78716c; font-size: 14px; margin: 0 0 5px 0; line-height: 1.6;">
+              Questions? We're here to help
+            </p>
+            <p style="color: #a8a29e; font-size: 13px; margin: 0; line-height: 1.6;">
+              Response time: 1-2 hours during business hours
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background: linear-gradient(135deg, #f6f7f5 0%, #faf2f0 100%); padding: 30px; text-align: center; border-top: 1px solid #e7e5e4;">
+          <p style="color: #78716c; font-size: 13px; margin: 0 0 10px 0; font-style: italic;">
+            "Where tranquility meets transformation"
+          </p>
+          <p style="color: #a8a29e; font-size: 12px; margin: 0;">
+            © 2024 Serenity Spa. All rights reserved.
           </p>
         </div>
-
-        <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h2 style="color: #f59e0b; font-size: 18px; margin-top: 0; border-bottom: 2px solid #f59e0b; padding-bottom: 10px;">
-            Requested Appointment
-          </h2>
-
-          <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-              <td style="padding: 10px 0; color: #666; font-weight: bold; width: 120px;">Service:</td>
-              <td style="padding: 10px 0; color: #333; font-size: 16px;">${data.serviceName}</td>
-            </tr>
-            <tr style="background: #f9f9f9;">
-              <td style="padding: 10px 0; color: #666; font-weight: bold;">Date:</td>
-              <td style="padding: 10px 0; color: #333; font-size: 16px;">${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</td>
-            </tr>
-            <tr>
-              <td style="padding: 10px 0; color: #666; font-weight: bold;">Time:</td>
-              <td style="padding: 10px 0; color: #333; font-size: 16px;">${data.time}</td>
-            </tr>
-            ${data.staffName ? `<tr style="background: #f9f9f9;">
-              <td style="padding: 10px 0; color: #666; font-weight: bold;">Preferred Therapist:</td>
-              <td style="padding: 10px 0; color: #333; font-size: 16px;">${data.staffName}</td>
-            </tr>` : ''}
-          </table>
-        </div>
-
-        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
-          <p style="color: #666; font-size: 14px; margin: 5px 0;">We'll get back to you soon!</p>
-          <p style="color: #999; font-size: 12px; margin: 5px 0;">Usually within 1-2 hours during business hours</p>
-        </div>
       </div>
-    </div>
+    </body>
+    </html>
   `
 
   return sendEmail(data.to, `Booking Request Received - ${data.serviceName}`, html)
@@ -117,54 +165,119 @@ export const sendBookingReceived = async (data: EmailData) => {
 
 export const sendBookingConfirmation = async (data: EmailData) => {
   const html = `
-    <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-        <h1 style="color: white; margin: 0; font-size: 28px;">Booking Confirmed! ✨</h1>
-      </div>
-
-      <div style="background: #f7f7f7; padding: 30px; border-radius: 0 0 10px 10px;">
-        <p style="font-size: 16px; color: #333; margin-bottom: 20px;">Dear ${data.customerName},</p>
-
-        <p style="font-size: 16px; color: #333; margin-bottom: 25px;">
-          Great news! Your spa appointment has been confirmed. We're looking forward to seeing you!
-        </p>
-
-        <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h2 style="color: #667eea; font-size: 18px; margin-top: 0; border-bottom: 2px solid #667eea; padding-bottom: 10px;">
-            Appointment Details
-          </h2>
-
-          <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-              <td style="padding: 10px 0; color: #666; font-weight: bold; width: 120px;">Service:</td>
-              <td style="padding: 10px 0; color: #333; font-size: 16px;">${data.serviceName}</td>
-            </tr>
-            <tr style="background: #f9f9f9;">
-              <td style="padding: 10px 0; color: #666; font-weight: bold;">Date:</td>
-              <td style="padding: 10px 0; color: #333; font-size: 16px;">${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</td>
-            </tr>
-            <tr>
-              <td style="padding: 10px 0; color: #666; font-weight: bold;">Time:</td>
-              <td style="padding: 10px 0; color: #333; font-size: 16px;">${data.time}</td>
-            </tr>
-            ${data.staffName ? `<tr style="background: #f9f9f9;">
-              <td style="padding: 10px 0; color: #666; font-weight: bold;">Therapist:</td>
-              <td style="padding: 10px 0; color: #333; font-size: 16px;">${data.staffName}</td>
-            </tr>` : ''}
-          </table>
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', serif; background-color: #faf9f8;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+        <!-- Header with success gradient -->
+        <div style="background: linear-gradient(135deg, #708360 0%, #8a9f77 50%, #dda15e 100%); padding: 40px 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0 0 10px 0; font-size: 32px; font-weight: 300; letter-spacing: 2px;">Serenity Spa</h1>
+          <div style="width: 60px; height: 1px; background-color: #ffffff; margin: 0 auto 15px auto;"></div>
+          <p style="color: #ffffff; margin: 0; font-size: 18px; font-weight: 300; letter-spacing: 1px;">Appointment Confirmed</p>
         </div>
 
-        <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-top: 20px; border-radius: 4px;">
-          <p style="margin: 0; color: #856404; font-size: 14px;">
-            <strong>Cancellation Policy:</strong> Please arrive 10 minutes early. Cancellations must be made at least 2 hours in advance.
+        <!-- Celebration Banner -->
+        <div style="background-color: #f6f7f5; padding: 20px; text-align: center; border-bottom: 1px solid #e7e5e4;">
+          <p style="color: #708360; font-size: 24px; margin: 0;">✨</p>
+          <p style="color: #5a6b4e; font-size: 16px; margin: 10px 0 0 0; font-weight: 500;">Your wellness journey awaits!</p>
+        </div>
+
+        <!-- Content Section -->
+        <div style="padding: 40px 30px; background-color: #ffffff;">
+          <p style="font-size: 16px; color: #44403c; margin-bottom: 25px; line-height: 1.6;">
+            Dear ${data.customerName},
+          </p>
+
+          <p style="font-size: 15px; color: #57534e; margin-bottom: 30px; line-height: 1.8;">
+            We're delighted to confirm your appointment at Serenity Spa. Our expert therapists are preparing a tranquil experience tailored just for you.
+          </p>
+
+          <!-- Confirmed Appointment Card -->
+          <div style="background: linear-gradient(135deg, #f6f7f5 0%, #eaebe7 100%); border-radius: 12px; padding: 25px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <h2 style="color: #475440; font-size: 20px; margin: 0 0 20px 0; font-weight: 400; letter-spacing: 1px; text-align: center;">Your Appointment</h2>
+
+            <div style="background-color: #ffffff; border-radius: 8px; padding: 20px;">
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 12px 0; vertical-align: top; border-bottom: 1px solid #f5f5f4;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Service</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0; font-weight: 500;">${data.serviceName}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 0; vertical-align: top; border-bottom: 1px solid #f5f5f4;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Date</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 0; vertical-align: top; border-bottom: 1px solid #f5f5f4;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Time</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.time}</p>
+                  </td>
+                </tr>
+                ${data.staffName ? `
+                <tr>
+                  <td style="padding: 12px 0; vertical-align: top;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Your Therapist</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.staffName}</p>
+                  </td>
+                </tr>` : ''}
+              </table>
+            </div>
+          </div>
+
+          <!-- Important Information -->
+          <div style="background-color: #fffef7; border-left: 3px solid #dda15e; padding: 20px; margin-bottom: 30px; border-radius: 0 8px 8px 0;">
+            <p style="color: #6f452b; font-size: 14px; margin: 0 0 10px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+              Please Note
+            </p>
+            <ul style="margin: 0; padding-left: 20px; color: #875432; font-size: 14px; line-height: 1.8;">
+              <li>Arrive 10 minutes early to enjoy our relaxation area</li>
+              <li>Cancellations require 2 hours notice</li>
+              <li>We'll have everything prepared for your visit</li>
+            </ul>
+          </div>
+
+          <!-- Preparation Tips -->
+          <div style="text-align: center; padding: 25px; background-color: #faf9f8; border-radius: 8px; margin-bottom: 30px;">
+            <p style="color: #5c9e9e; font-size: 16px; margin: 0 0 15px 0; font-weight: 500;">Enhance Your Experience</p>
+            <p style="color: #78716c; font-size: 14px; margin: 0; line-height: 1.6;">
+              Wear comfortable clothing • Stay hydrated • Arrive relaxed
+            </p>
+          </div>
+
+          <!-- Divider -->
+          <div style="text-align: center; margin: 35px 0;">
+            <div style="display: inline-block; width: 40px; height: 1px; background-color: #d6d3d1; margin: 0 10px;"></div>
+            <span style="color: #ceaca1; font-size: 20px;">✦</span>
+            <div style="display: inline-block; width: 40px; height: 1px; background-color: #d6d3d1; margin: 0 10px;"></div>
+          </div>
+
+          <!-- Closing -->
+          <div style="text-align: center;">
+            <p style="color: #57534e; font-size: 15px; margin: 0; line-height: 1.6;">
+              We look forward to welcoming you
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background: linear-gradient(135deg, #f6f7f5 0%, #faf2f0 100%); padding: 30px; text-align: center; border-top: 1px solid #e7e5e4;">
+          <p style="color: #78716c; font-size: 13px; margin: 0 0 10px 0; font-style: italic;">
+            "Where tranquility meets transformation"
+          </p>
+          <p style="color: #a8a29e; font-size: 12px; margin: 0;">
+            © 2024 Serenity Spa. All rights reserved.
           </p>
         </div>
-
-        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
-          <p style="color: #666; font-size: 14px; margin: 5px 0;">Thank you for choosing our spa!</p>
-        </div>
       </div>
-    </div>
+    </body>
+    </html>
   `
 
   return sendEmail(data.to, `Booking Confirmation - ${data.serviceName}`, html)
@@ -172,30 +285,104 @@ export const sendBookingConfirmation = async (data: EmailData) => {
 
 export const sendBookingReminder = async (data: EmailData) => {
   const html = `
-    <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-        <h1 style="color: white; margin: 0; font-size: 28px;">Appointment Reminder 📅</h1>
-      </div>
-
-      <div style="background: #f7f7f7; padding: 30px; border-radius: 0 0 10px 10px;">
-        <p style="font-size: 16px; color: #333; margin-bottom: 20px;">Dear ${data.customerName},</p>
-
-        <p style="font-size: 16px; color: #333; margin-bottom: 25px;">
-          This is a friendly reminder about your appointment tomorrow.
-        </p>
-
-        <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h2 style="color: #3b82f6; font-size: 18px; margin-top: 0;">Tomorrow's Appointment</h2>
-          <p style="font-size: 16px; margin: 10px 0;"><strong>Service:</strong> ${data.serviceName}</p>
-          <p style="font-size: 16px; margin: 10px 0;"><strong>Time:</strong> ${data.time}</p>
-          ${data.staffName ? `<p style="font-size: 16px; margin: 10px 0;"><strong>Therapist:</strong> ${data.staffName}</p>` : ''}
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', serif; background-color: #faf9f8;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+        <!-- Header with calming gradient -->
+        <div style="background: linear-gradient(135deg, #5c9e9e 0%, #7dbaba 50%, #aad4d4 100%); padding: 40px 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0 0 10px 0; font-size: 32px; font-weight: 300; letter-spacing: 2px;">Serenity Spa</h1>
+          <div style="width: 60px; height: 1px; background-color: #ffffff; margin: 0 auto 15px auto;"></div>
+          <p style="color: #ffffff; margin: 0; font-size: 18px; font-weight: 300; letter-spacing: 1px;">Appointment Reminder</p>
         </div>
 
-        <div style="text-align: center; margin-top: 30px;">
-          <p style="color: #666; font-size: 14px;">Please arrive 10 minutes early. We look forward to seeing you!</p>
+        <!-- Content Section -->
+        <div style="padding: 40px 30px; background-color: #ffffff;">
+          <p style="font-size: 16px; color: #44403c; margin-bottom: 25px; line-height: 1.6;">
+            Dear ${data.customerName},
+          </p>
+
+          <p style="font-size: 15px; color: #57534e; margin-bottom: 30px; line-height: 1.8;">
+            Your journey to relaxation is almost here! This is a gentle reminder about your spa appointment tomorrow.
+          </p>
+
+          <!-- Tomorrow's Appointment Card -->
+          <div style="background: linear-gradient(135deg, #f5fafa 0%, #eaf4f4 100%); border-radius: 12px; padding: 25px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <p style="color: #3f6a6a; font-size: 14px; margin: 0; text-transform: uppercase; letter-spacing: 2px;">Tomorrow</p>
+              <p style="color: #4a8383; font-size: 28px; margin: 10px 0; font-weight: 300;">${data.time}</p>
+            </div>
+
+            <div style="background-color: #ffffff; border-radius: 8px; padding: 20px;">
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 10px 0; vertical-align: top;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Service</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0; font-weight: 500;">${data.serviceName}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; vertical-align: top;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Date</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
+                  </td>
+                </tr>
+                ${data.staffName ? `
+                <tr>
+                  <td style="padding: 10px 0; vertical-align: top;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Your Therapist</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.staffName}</p>
+                  </td>
+                </tr>` : ''}
+              </table>
+            </div>
+          </div>
+
+          <!-- Preparation Reminders -->
+          <div style="background-color: #f6f7f5; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+            <p style="color: #5a6b4e; font-size: 15px; margin: 0 0 15px 0; font-weight: 500;">To enhance your experience:</p>
+            <ul style="margin: 0; padding-left: 20px; color: #78716c; font-size: 14px; line-height: 1.8;">
+              <li>Arrive 10 minutes early to unwind in our relaxation area</li>
+              <li>Wear comfortable, loose-fitting clothing</li>
+              <li>Stay hydrated throughout the day</li>
+              <li>Leave your worries at the door</li>
+            </ul>
+          </div>
+
+          <!-- Divider -->
+          <div style="text-align: center; margin: 35px 0;">
+            <div style="display: inline-block; width: 40px; height: 1px; background-color: #d6d3d1; margin: 0 10px;"></div>
+            <span style="color: #5c9e9e; font-size: 20px;">✦</span>
+            <div style="display: inline-block; width: 40px; height: 1px; background-color: #d6d3d1; margin: 0 10px;"></div>
+          </div>
+
+          <!-- Closing Message -->
+          <div style="text-align: center;">
+            <p style="color: #57534e; font-size: 15px; margin: 0 0 10px 0; line-height: 1.6;">
+              We're preparing everything for your visit
+            </p>
+            <p style="color: #78716c; font-size: 14px; margin: 0; font-style: italic;">
+              See you tomorrow!
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background: linear-gradient(135deg, #f6f7f5 0%, #faf2f0 100%); padding: 30px; text-align: center; border-top: 1px solid #e7e5e4;">
+          <p style="color: #78716c; font-size: 13px; margin: 0 0 10px 0; font-style: italic;">
+            "Where tranquility meets transformation"
+          </p>
+          <p style="color: #a8a29e; font-size: 12px; margin: 0;">
+            © 2024 Serenity Spa. All rights reserved.
+          </p>
         </div>
       </div>
-    </div>
+    </body>
+    </html>
   `
 
   return sendEmail(data.to, `Appointment Reminder - Tomorrow at ${data.time}`, html)
@@ -209,38 +396,117 @@ export const sendRescheduleNotification = async (data: EmailData & {
   reason?: string
 }) => {
   const html = `
-    <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-        <h1 style="color: white; margin: 0; font-size: 28px;">Appointment Rescheduled 📅</h1>
-      </div>
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', serif; background-color: #faf9f8;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+        <!-- Header with update gradient -->
+        <div style="background: linear-gradient(135deg, #7dbaba 0%, #5c9e9e 50%, #dda15e 100%); padding: 40px 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0 0 10px 0; font-size: 32px; font-weight: 300; letter-spacing: 2px;">Serenity Spa</h1>
+          <div style="width: 60px; height: 1px; background-color: #ffffff; margin: 0 auto 15px auto;"></div>
+          <p style="color: #ffffff; margin: 0; font-size: 18px; font-weight: 300; letter-spacing: 1px;">Appointment Rescheduled</p>
+        </div>
 
-      <div style="background: #f7f7f7; padding: 30px; border-radius: 0 0 10px 10px;">
-        <p style="font-size: 16px; color: #333; margin-bottom: 20px;">Dear ${data.customerName},</p>
+        <!-- Content Section -->
+        <div style="padding: 40px 30px; background-color: #ffffff;">
+          <p style="font-size: 16px; color: #44403c; margin-bottom: 25px; line-height: 1.6;">
+            Dear ${data.customerName},
+          </p>
 
-        <p style="font-size: 16px; color: #333; margin-bottom: 25px;">
-          Your appointment has been successfully rescheduled.
-        </p>
+          <p style="font-size: 15px; color: #57534e; margin-bottom: 30px; line-height: 1.8;">
+            Your appointment has been successfully rescheduled. We've updated our schedule and look forward to seeing you at your new appointment time.
+          </p>
 
-        <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-          <h3 style="margin: 0 0 10px 0; color: #92400e; font-size: 16px;">⚠️ NEW DATE AND TIME</h3>
-          <p style="margin: 0; color: #92400e; font-size: 18px; font-weight: bold;">
-            ${new Date(data.newDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at ${data.newTime}
+          <!-- New Appointment Highlight -->
+          <div style="background: linear-gradient(135deg, #fffef7 0%, #fdf2d9 100%); border-radius: 12px; padding: 25px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <p style="color: #dda15e; font-size: 24px; margin: 0;">✨</p>
+              <p style="color: #c78443; font-size: 16px; margin: 10px 0 0 0; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">New Appointment</p>
+            </div>
+
+            <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; border: 2px solid #f7e4bd;">
+              <div style="text-align: center; margin-bottom: 15px;">
+                <p style="color: #875432; font-size: 20px; margin: 0; font-weight: 500;">
+                  ${new Date(data.newDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                </p>
+                <p style="color: #a66938; font-size: 24px; margin: 10px 0; font-weight: 300;">
+                  ${data.newTime}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Service Details & Previous Time -->
+          <div style="background-color: #faf9f8; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 10px 0; vertical-align: top; border-bottom: 1px solid #e7e5e4;">
+                  <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Service</span>
+                  <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0; font-weight: 500;">${data.serviceName}</p>
+                </td>
+              </tr>
+              ${data.staffName ? `
+              <tr>
+                <td style="padding: 10px 0; vertical-align: top; border-bottom: 1px solid #e7e5e4;">
+                  <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Your Therapist</span>
+                  <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.staffName}</p>
+                </td>
+              </tr>` : ''}
+              <tr>
+                <td style="padding: 10px 0; vertical-align: top;">
+                  <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Previous Time</span>
+                  <p style="color: #a8a29e; font-size: 14px; margin: 5px 0 0 0; text-decoration: line-through;">
+                    ${new Date(data.originalDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} at ${data.originalTime}
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Important Reminder -->
+          <div style="background-color: #f6f7f5; border-left: 3px solid #8a9f77; padding: 20px; margin-bottom: 30px; border-radius: 0 8px 8px 0;">
+            <p style="color: #475440; font-size: 14px; margin: 0 0 10px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+              Please Note
+            </p>
+            <p style="color: #5a6b4e; font-size: 14px; margin: 0; line-height: 1.6;">
+              Please update your calendar with the new date and time. We recommend arriving 10 minutes early to settle in and begin your relaxation journey.
+            </p>
+          </div>
+
+          <!-- Divider -->
+          <div style="text-align: center; margin: 35px 0;">
+            <div style="display: inline-block; width: 40px; height: 1px; background-color: #d6d3d1; margin: 0 10px;"></div>
+            <span style="color: #5c9e9e; font-size: 20px;">⚬</span>
+            <div style="display: inline-block; width: 40px; height: 1px; background-color: #d6d3d1; margin: 0 10px;"></div>
+          </div>
+
+          <!-- Closing Message -->
+          <div style="text-align: center;">
+            <p style="color: #57534e; font-size: 15px; margin: 0 0 10px 0; line-height: 1.6;">
+              Thank you for your flexibility
+            </p>
+            <p style="color: #78716c; font-size: 14px; margin: 0;">
+              We look forward to your visit
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background: linear-gradient(135deg, #f6f7f5 0%, #faf2f0 100%); padding: 30px; text-align: center; border-top: 1px solid #e7e5e4;">
+          <p style="color: #78716c; font-size: 13px; margin: 0 0 10px 0; font-style: italic;">
+            "Where tranquility meets transformation"
+          </p>
+          <p style="color: #a8a29e; font-size: 12px; margin: 0;">
+            © 2024 Serenity Spa. All rights reserved.
           </p>
         </div>
-
-        <div style="background: white; border-radius: 8px; padding: 20px;">
-          <p style="color: #999; font-size: 14px; margin-bottom: 10px;">
-            <strong>Previous:</strong> <span style="text-decoration: line-through;">${new Date(data.originalDate).toLocaleDateString()} at ${data.originalTime}</span>
-          </p>
-          <p style="font-size: 16px; margin: 10px 0;"><strong>Service:</strong> ${data.serviceName}</p>
-          ${data.staffName ? `<p style="font-size: 16px; margin: 10px 0;"><strong>Therapist:</strong> ${data.staffName}</p>` : ''}
-        </div>
-
-        <div style="text-align: center; margin-top: 30px;">
-          <p style="color: #666; font-size: 14px;">Please update your calendar. We look forward to seeing you!</p>
-        </div>
       </div>
-    </div>
+    </body>
+    </html>
   `
 
   return sendEmail(data.to, `Appointment Rescheduled - ${data.serviceName}`, html)
@@ -248,31 +514,105 @@ export const sendRescheduleNotification = async (data: EmailData & {
 
 export const sendCancellationNotification = async (data: EmailData & { reason?: string }) => {
   const html = `
-    <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <div style="background: linear-gradient(135deg, #f93b3b 0%, #ff6b6b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-        <h1 style="color: white; margin: 0; font-size: 28px;">Appointment Cancelled</h1>
-      </div>
-
-      <div style="background: #f7f7f7; padding: 30px; border-radius: 0 0 10px 10px;">
-        <p style="font-size: 16px; color: #333; margin-bottom: 20px;">Dear ${data.customerName},</p>
-
-        <p style="font-size: 16px; color: #333; margin-bottom: 25px;">
-          Your appointment has been cancelled as requested.
-        </p>
-
-        <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h2 style="color: #f93b3b; font-size: 18px; margin-top: 0;">Cancelled Appointment</h2>
-          <p style="font-size: 16px; margin: 10px 0;"><strong>Service:</strong> ${data.serviceName}</p>
-          <p style="font-size: 16px; margin: 10px 0;"><strong>Date:</strong> ${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
-          <p style="font-size: 16px; margin: 10px 0;"><strong>Time:</strong> ${data.time}</p>
-          ${data.reason ? `<p style="font-size: 16px; margin: 10px 0;"><strong>Reason:</strong> ${data.reason}</p>` : ''}
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', serif; background-color: #faf9f8;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+        <!-- Header with subtle gradient -->
+        <div style="background: linear-gradient(135deg, #ceaca1 0%, #dea59b 50%, #eecec8 100%); padding: 40px 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0 0 10px 0; font-size: 32px; font-weight: 300; letter-spacing: 2px;">Serenity Spa</h1>
+          <div style="width: 60px; height: 1px; background-color: #ffffff; margin: 0 auto 15px auto;"></div>
+          <p style="color: #ffffff; margin: 0; font-size: 18px; font-weight: 300; letter-spacing: 1px;">Appointment Cancelled</p>
         </div>
 
-        <div style="text-align: center; margin-top: 30px;">
-          <p style="color: #666; font-size: 14px;">We hope to see you again soon! Feel free to book a new appointment anytime.</p>
+        <!-- Content Section -->
+        <div style="padding: 40px 30px; background-color: #ffffff;">
+          <p style="font-size: 16px; color: #44403c; margin-bottom: 25px; line-height: 1.6;">
+            Dear ${data.customerName},
+          </p>
+
+          <p style="font-size: 15px; color: #57534e; margin-bottom: 30px; line-height: 1.8;">
+            We've received your cancellation request and have removed your appointment from our schedule. We understand that plans change, and we're here whenever you're ready to reschedule.
+          </p>
+
+          <!-- Cancelled Appointment Details -->
+          <div style="background-color: #faf9f8; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+            <h2 style="color: #936b63; font-size: 20px; margin: 0 0 20px 0; font-weight: 400; letter-spacing: 1px;">Cancelled Appointment Details</h2>
+
+            <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; border-left: 3px solid #dea59b;">
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 10px 0; vertical-align: top;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Service</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.serviceName}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; vertical-align: top;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Original Date</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; vertical-align: top;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Original Time</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.time}</p>
+                  </td>
+                </tr>
+                ${data.reason ? `
+                <tr>
+                  <td style="padding: 10px 0; vertical-align: top;">
+                    <span style="color: #78716c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Reason</span>
+                    <p style="color: #292524; font-size: 16px; margin: 5px 0 0 0;">${data.reason}</p>
+                  </td>
+                </tr>` : ''}
+              </table>
+            </div>
+          </div>
+
+          <!-- Rebook Encouragement -->
+          <div style="background: linear-gradient(135deg, #f6f7f5 0%, #eaebe7 100%); border-radius: 8px; padding: 25px; text-align: center; margin-bottom: 30px;">
+            <p style="color: #708360; font-size: 18px; margin: 0 0 10px 0;">✨</p>
+            <p style="color: #5a6b4e; font-size: 16px; margin: 0 0 15px 0; font-weight: 500;">Your wellness journey continues</p>
+            <p style="color: #78716c; font-size: 14px; margin: 0; line-height: 1.6;">
+              When you're ready to reschedule, we'll be here with open arms and peaceful hearts.
+            </p>
+          </div>
+
+          <!-- Divider -->
+          <div style="text-align: center; margin: 35px 0;">
+            <div style="display: inline-block; width: 40px; height: 1px; background-color: #d6d3d1; margin: 0 10px;"></div>
+            <span style="color: #ceaca1; font-size: 20px;">✦</span>
+            <div style="display: inline-block; width: 40px; height: 1px; background-color: #d6d3d1; margin: 0 10px;"></div>
+          </div>
+
+          <!-- Closing Message -->
+          <div style="text-align: center;">
+            <p style="color: #57534e; font-size: 15px; margin: 0 0 10px 0; line-height: 1.6;">
+              Thank you for letting us know
+            </p>
+            <p style="color: #78716c; font-size: 14px; margin: 0;">
+              We hope to see you again soon
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background: linear-gradient(135deg, #f6f7f5 0%, #faf2f0 100%); padding: 30px; text-align: center; border-top: 1px solid #e7e5e4;">
+          <p style="color: #78716c; font-size: 13px; margin: 0 0 10px 0; font-style: italic;">
+            "Where tranquility meets transformation"
+          </p>
+          <p style="color: #a8a29e; font-size: 12px; margin: 0;">
+            © 2024 Serenity Spa. All rights reserved.
+          </p>
         </div>
       </div>
-    </div>
+    </body>
+    </html>
   `
 
   return sendEmail(data.to, `Appointment Cancelled - ${data.serviceName}`, html)
