@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { Calendar, Clock, User, Mail, Phone, FileText, AlertCircle, CheckCircle, Ban, Moon, Sparkles, ChevronRight, Flower2, Heart, Check, ArrowLeft, ArrowRight } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { queryClient } from '../lib/queryClient'
+import { queryClient, queryKeys } from '../lib/queryClient'
 import { useServices } from '../hooks'
 import {
   getBusinessHours,
@@ -407,7 +407,7 @@ const Book = () => {
         if (error) throw error
 
         // Invalidate bookings query to update admin dashboard
-        queryClient.invalidateQueries({ queryKey: ['supabase', 'bookings'] })
+        queryClient.invalidateQueries({ queryKey: queryKeys.bookings() })
 
         navigate('/dashboard')
         showAlert('Your appointment has been successfully rescheduled!', 'success')
@@ -428,7 +428,9 @@ const Book = () => {
         if (error) throw error
 
         // Invalidate bookings query to update admin dashboard
-        queryClient.invalidateQueries({ queryKey: ['supabase', 'bookings'] })
+        queryClient.invalidateQueries({ queryKey: queryKeys.bookings() })
+        // Specifically invalidate pending bookings for live updates
+        queryClient.invalidateQueries({ queryKey: queryKeys.bookingsPending() })
 
         try {
           const { sendBookingReceived } = await import('../services/emailService')

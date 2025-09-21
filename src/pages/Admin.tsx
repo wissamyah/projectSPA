@@ -8,6 +8,7 @@ import { useModal } from '../contexts/ModalContext'
 import { useBookingsByDate, usePendingBookings } from '../hooks'
 import { useServices, useStaff } from '../hooks'
 import { useQueryClient } from '@tanstack/react-query'
+import { queryKeys } from '../lib/queryClient'
 
 // Import components
 import { AdminHeader } from '../components/admin/AdminHeader'
@@ -72,11 +73,11 @@ const Admin = () => {
           // Invalidate queries to refetch data
           if (payload.new?.booking_date === selectedDate ||
               payload.old?.booking_date === selectedDate) {
-            queryClient.invalidateQueries({ queryKey: ['supabase', 'bookings', 'date', selectedDate] })
+            queryClient.invalidateQueries({ queryKey: queryKeys.bookingsByDate(selectedDate) })
           }
 
-          // Invalidate pending bookings
-          queryClient.invalidateQueries({ queryKey: ['supabase', 'bookings', 'pending'] })
+          // Invalidate pending bookings - use proper query key
+          queryClient.invalidateQueries({ queryKey: queryKeys.bookingsPending() })
 
           // Flash animation for new pending bookings
           if (payload.eventType === 'INSERT' && payload.new?.status === 'pending') {
