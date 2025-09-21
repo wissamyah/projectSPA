@@ -202,6 +202,12 @@ const Admin = () => {
 
       // After any status update, refresh the bookings to ensure we have the latest data
       await refetchBookings()
+
+      // Update the selectedBooking if it's the one that was just updated
+      if (selectedBooking?.id === bookingId) {
+        const updatedBooking = { ...selectedBooking, status }
+        setSelectedBooking(updatedBooking)
+      }
     } catch (error) {
       console.error('Error updating booking status:', error)
       await showAlert('Failed to update booking status', 'error')

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { Calendar, Clock, User, Mail, Phone, FileText, AlertCircle, CheckCircle, Ban, Moon, Sparkles, ChevronRight, Flower2, Heart, Check, ArrowLeft, ArrowRight } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { queryClient } from '../lib/queryClient'
 import { useServices } from '../hooks'
 import {
   getBusinessHours,
@@ -405,8 +406,11 @@ const Book = () => {
 
         if (error) throw error
 
-        await showAlert('Your appointment has been successfully rescheduled!', 'success')
+        // Invalidate bookings query to update admin dashboard
+        queryClient.invalidateQueries({ queryKey: ['supabase', 'bookings'] })
+
         navigate('/dashboard')
+        showAlert('Your appointment has been successfully rescheduled!', 'success')
       } else {
         const bookingData = {
           ...formData,
@@ -422,6 +426,9 @@ const Book = () => {
           .insert([bookingData])
 
         if (error) throw error
+
+        // Invalidate bookings query to update admin dashboard
+        queryClient.invalidateQueries({ queryKey: ['supabase', 'bookings'] })
 
         try {
           const { sendBookingReceived } = await import('../services/emailService')
@@ -439,8 +446,8 @@ const Book = () => {
           console.error('Failed to send booking received email:', emailError)
         }
 
-        await showAlert('Booking submitted successfully! You will receive an email confirmation once our staff reviews your request.', 'success')
         navigate('/dashboard')
+        showAlert('Booking submitted successfully! You will receive an email confirmation once our staff reviews your request.', 'success')
       }
     } catch (error: any) {
       await showAlert('Error ' + (isRescheduling ? 'rescheduling' : 'creating') + ' booking: ' + error.message, 'error')
