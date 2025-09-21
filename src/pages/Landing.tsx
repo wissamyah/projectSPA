@@ -86,65 +86,75 @@ const Landing = () => {
     <div className="overflow-x-hidden">
       {/* Hero Section */}
       <section className="relative min-h-screen pt-20 bg-gradient-to-br from-cream-50 via-rose-50 to-sage-50">
-        {/* Decorative background elements */}
+        {/* Decorative background elements - optimized for mobile */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-sage-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-float"></div>
-          <div className="absolute top-40 right-10 w-72 h-72 bg-rose-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-spa-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-float" style={{ animationDelay: '4s' }}></div>
+          <div className="absolute top-20 -left-20 md:left-10 w-48 md:w-72 h-48 md:h-72 bg-sage-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 md:opacity-30 animate-float"></div>
+          <div className="absolute top-40 -right-20 md:right-10 w-48 md:w-72 h-48 md:h-72 bg-rose-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 md:opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-48 md:w-72 h-48 md:h-72 bg-spa-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 md:opacity-30 animate-float" style={{ animationDelay: '4s' }}></div>
         </div>
 
-        <div className="relative container mx-auto px-4 py-32">
+        <div className="relative container mx-auto px-6 md:px-4 py-20 md:py-32">
           <div className="text-center max-w-4xl mx-auto">
-            {/* Decorative element */}
-            <div className="flex justify-center mb-6 animate-slide-up">
-              <div className="inline-flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-gold-300">
+            {/* Decorative element - enhanced for mobile */}
+            <div className="flex justify-center mb-8 md:mb-6 animate-slide-up">
+              <div className="inline-flex items-center px-5 py-2.5 md:px-4 md:py-2 bg-white/90 md:bg-white/80 backdrop-blur-sm rounded-full border border-gold-300 shadow-sm">
                 <Sparkles className="h-4 w-4 text-gold-500 mr-2" />
                 <span className="text-sm font-medium text-stone-700">Welcome to Serenity</span>
               </div>
             </div>
 
-            <h1 className="text-6xl md:text-7xl font-light text-stone-800 mb-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+            {/* Main heading - better mobile typography */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-stone-800 mb-4 md:mb-6 animate-slide-up leading-tight" style={{ animationDelay: '0.1s' }}>
               Discover Your
-              <span className="block text-5xl md:text-6xl font-normal text-transparent bg-clip-text bg-gradient-to-r from-sage-600 to-spa-600 mt-2">
+              <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-transparent bg-clip-text bg-gradient-to-r from-sage-600 to-spa-600 mt-2 md:mt-2">
                 Inner Peace
               </span>
             </h1>
 
-            <p className="text-xl text-stone-600 mb-12 leading-relaxed max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: '0.2s' }}>
+            {/* Description - improved mobile readability */}
+            <p className="text-base sm:text-lg md:text-xl text-stone-600 mb-10 md:mb-12 leading-relaxed max-w-2xl mx-auto animate-slide-up px-4 md:px-0" style={{ animationDelay: '0.2s' }}>
               Escape to a sanctuary of tranquility where luxury meets wellness.
-              Experience transformative spa treatments tailored to restore your natural radiance.
+              <span className="hidden sm:inline"> Experience transformative spa treatments tailored to restore your natural radiance.</span>
+              <span className="sm:hidden block mt-3">Transform your wellness journey with our expert treatments.</span>
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up" style={{ animationDelay: '0.3s' }}>
+            {/* CTA Buttons - enhanced mobile layout */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-slide-up px-4 md:px-0" style={{ animationDelay: '0.3s' }}>
               <Link
                 to="/book"
-                className="group bg-gradient-to-r from-sage-600 to-sage-700 text-white px-10 py-4 rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-2"
+                className="group bg-gradient-to-r from-sage-600 to-sage-700 text-white px-8 sm:px-10 py-4 rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg"
               >
-                <span className="font-medium">Book Your Escape</span>
+                <span className="font-medium text-base sm:text-base">Book Your Escape</span>
                 <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 to="/services"
-                className="group bg-white/90 backdrop-blur-sm border-2 border-sage-300 text-sage-700 px-10 py-4 rounded-full hover:bg-sage-50 hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-2"
+                className="group bg-white/95 sm:bg-white/90 backdrop-blur-sm border-2 border-sage-300 text-sage-700 px-8 sm:px-10 py-4 rounded-full hover:bg-sage-50 hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-2 shadow-md sm:shadow-none"
               >
-                <span className="font-medium">Explore Treatments</span>
+                <span className="font-medium text-base sm:text-base">Explore Treatments</span>
                 <Sparkles className="h-5 w-5 text-gold-500 group-hover:rotate-12 transition-transform" />
               </Link>
             </div>
 
-            {/* Trust indicators */}
-            <div className="mt-16 flex flex-wrap justify-center gap-8 text-stone-600 animate-slide-up" style={{ animationDelay: '0.4s' }}>
-              <div className="flex items-center space-x-2">
-                <Star className="h-5 w-5 text-gold-500" />
-                <span className="text-sm">5-Star Rated</span>
+            {/* Trust indicators - improved mobile spacing */}
+            <div className="mt-12 md:mt-16 grid grid-cols-1 sm:flex sm:flex-wrap justify-center gap-6 sm:gap-8 text-stone-600 animate-slide-up px-4 md:px-0" style={{ animationDelay: '0.4s' }}>
+              <div className="flex items-center justify-center sm:justify-start space-x-2 py-2 sm:py-0">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gold-50">
+                  <Star className="h-5 w-5 text-gold-500" />
+                </div>
+                <span className="text-sm font-medium">5-Star Rated</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <Users className="h-5 w-5 text-sage-600" />
-                <span className="text-sm">10,000+ Happy Clients</span>
+              <div className="flex items-center justify-center sm:justify-start space-x-2 py-2 sm:py-0">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-sage-50">
+                  <Users className="h-5 w-5 text-sage-600" />
+                </div>
+                <span className="text-sm font-medium">10,000+ Happy Clients</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <Calendar className="h-5 w-5 text-spa-600" />
-                <span className="text-sm">Easy Online Booking</span>
+              <div className="flex items-center justify-center sm:justify-start space-x-2 py-2 sm:py-0">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-spa-50">
+                  <Calendar className="h-5 w-5 text-spa-600" />
+                </div>
+                <span className="text-sm font-medium">Easy Online Booking</span>
               </div>
             </div>
           </div>
