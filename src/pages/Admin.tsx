@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { CheckCircle, XCircle, AlertCircle, Crown } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { getBusinessHours, generateTimeSlots } from '../utils/businessHours'
@@ -54,7 +54,7 @@ const Admin = () => {
 
   // Get dynamic time slots based on business hours
   const businessHours = getBusinessHours()
-  const standardTimeSlots = generateTimeSlots(businessHours)
+  const standardTimeSlots = useMemo(() => generateTimeSlots(businessHours), [])
 
   useEffect(() => {
     // Set up real-time subscription for new bookings
@@ -101,7 +101,7 @@ const Admin = () => {
 
     const allSlots = [...new Set([...standardTimeSlots, ...bookingTimes])].sort()
     setDisplayTimeSlots(allSlots)
-  }, [bookings, standardTimeSlots.join(',')])
+  }, [bookings, standardTimeSlots])
 
   // Data is now fetched via React Query hooks
 
