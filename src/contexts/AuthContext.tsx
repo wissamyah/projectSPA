@@ -90,6 +90,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     let mounted = true
     let isInitializing = true
 
+    // Failsafe: Always set loading to false after 5 seconds
+    const loadingTimeout = setTimeout(() => {
+      console.log('[AUTH] Loading timeout reached, forcing loading to false')
+      setLoading(false)
+    }, 5000)
+
     // Get initial session
     const initAuth = async () => {
       console.log('[AUTH] initAuth started')
@@ -138,6 +144,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       } finally {
         if (mounted) {
           console.log('[AUTH] InitAuth complete, setting loading to false')
+          clearTimeout(loadingTimeout) // Clear the failsafe timeout
           setLoading(false)
           isInitializing = false
         } else {
@@ -242,6 +249,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     return () => {
       mounted = false
+      clearTimeout(loadingTimeout) // Clear the failsafe timeout on unmount
       subscription.unsubscribe()
       clearInterval(refreshInterval)
     }

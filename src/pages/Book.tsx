@@ -219,6 +219,7 @@ const Book = () => {
 
       if (qualifiedStaff.length === 0) {
         setBookedSlots(timeSlots)
+        setCheckingAvailability(false) // Fix: Always reset the checking state
         return
       }
 
